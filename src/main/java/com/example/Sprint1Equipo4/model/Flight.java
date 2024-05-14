@@ -19,7 +19,7 @@ public class Flight {
     private String seatType;
     private Integer pricePerPerson;
     @JsonFormat(pattern ="dd/MM/yyyy")
-    private LocalDate departureDate;
+    private LocalDate dateFrom;
     @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate returnDate;
+    private LocalDate dateTo;
 }
