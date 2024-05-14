@@ -6,16 +6,16 @@ import com.example.Sprint1Equipo4.repository.HotelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
+
 import java.util.List;
+
+
 
 @Service
 public class HotelServiceImpl implements HotelService {
 
    @Autowired
    HotelRepository hotelRepository;
-
    @Override
    public List<HotelDTO> listHotels() {
       List<Hotel> listHotel = hotelRepository.findAll();
