@@ -6,13 +6,14 @@ import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
 import com.example.Sprint1Equipo4.dto.response.HotelDTO;
 import com.example.Sprint1Equipo4.dto.response.ReservationDto;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
+import com.example.Sprint1Equipo4.exception.HotelNotFoundException;
 import com.example.Sprint1Equipo4.model.Hotel;
 import com.example.Sprint1Equipo4.repository.HotelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class HotelServiceImpl implements HotelService {
@@ -64,11 +65,16 @@ public class HotelServiceImpl implements HotelService {
    }
 
    public ReservationDto bookHotel(ReservationDtoRequest reservationDtoRequest) {
-      List<Hotel> availableHotels = hotelRepository.findAll(); //ver caso si reservado es true
+      List<Hotel> allHotels = hotelRepository.findAll();
+      // Filtrar hoteles que no están reservados por si cambia a true
+      List<Hotel> availableHotels = allHotels.stream()
+            .filter(hotel -> !hotel.getReserved())
+            .collect(Collectors.toList());
+
       Hotel selectedHotel = selectHotel(availableHotels, reservationDtoRequest.getBooking());
 
       if (selectedHotel == null) {
-         return null; //excepcion si el hotel no cumple los requisitos
+         throw new HotelNotFoundException();
       }
 
       double totalPrice = calculateTotalPrice(selectedHotel, reservationDtoRequest.getBooking().getDateFrom(), reservationDtoRequest.getBooking().getDateTo());
@@ -77,12 +83,12 @@ public class HotelServiceImpl implements HotelService {
 
       ReservationDto reservationDto = new ReservationDto();
       reservationDto.setUserName(reservationDtoRequest.getUserName());
-      reservationDto.setAmount(String.format("%.2f", totalPrice));
-      reservationDto.setInterest(String.format("%.2f", interest));
-      reservationDto.setTotal(String.format("%.2f", total));
+      reservationDto.setAmount(String.valueOf(totalPrice));
+      reservationDto.setInterest(String.valueOf(interest));
+      reservationDto.setTotal(String.valueOf(total));
       reservationDto.setBooking(reservationDtoRequest.getBooking());
-      reservationDto.setStatus(new StatusDTO(201, "La reserva terminó satisfactoriamente"));
-      System.out.println(reservationDto);
+      reservationDto.setStatus(new StatusDTO(201, "La reserva se realizó satisfactoriamente"));
+
       return reservationDto;
    }
 }
