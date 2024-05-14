@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class HotelServiceImpl implements HotelService {
@@ -21,6 +22,7 @@ public class HotelServiceImpl implements HotelService {
       List<Hotel> listHotel = hotelRepository.findAll();
       return listHotel.stream()
             .map(a -> new HotelDTO(
+                  a.getHotelCode(),
                   a.getName(),
                   a.getDestination(),
                   a.getRoomType(),
@@ -30,4 +32,31 @@ public class HotelServiceImpl implements HotelService {
                   a.getReserved()))
                   .toList();
    }
-}
+
+   @Override
+   public List<HotelDTO> findAvailableHotels(LocalDate dateFrom, LocalDate dateTo, String destination) {
+      List<Hotel> allHotels = hotelRepository.findAll();
+      List<Hotel> availableHotels = allHotels.stream()
+              .filter(hotel -> hotel.getDestination().equals(destination))
+              .filter(hotel -> !hotel.getReserved())
+              .filter(hotel -> dateFrom.isBefore(hotel.getDateTo()) && dateTo.isAfter(hotel.getDateFrom()))
+
+              .toList();
+
+
+      List<HotelDTO> availableHotelsDTO = new ArrayList<>();
+      for (Hotel hotel : availableHotels) {
+         availableHotelsDTO.add(new HotelDTO(hotel.getHotelCode(),
+                 hotel.getName(),
+                 hotel.getDestination(),
+                 hotel.getRoomType(),
+                 hotel.getPricePerNight(),
+                 hotel.getDateFrom(),
+                 hotel.getDateTo(),
+                 hotel.getReserved()));
+      }
+
+      return availableHotelsDTO;
+   }
+   }
+

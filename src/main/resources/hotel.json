@@ -2,7 +2,7 @@
   {
     "hotel_code": "CH-0002",
     "name": "Cataratas Hotel",
-    "destination": "Puerto Iguazú",
+    "destination": "Puerto Iguazu",
     "room_type": "Double",
     "price_per_night": 6300,
     "date_from": "2025-02-10",
@@ -12,7 +12,7 @@
   {
     "hotel_code": "CH-0003",
     "name": "Cataratas Hotel 2",
-    "destination": "Puerto Iguazú",
+    "destination": "Puerto Iguazu",
     "room_type": "Triple",
     "price_per_night": 8200,
     "date_from": "2025-02-10",
