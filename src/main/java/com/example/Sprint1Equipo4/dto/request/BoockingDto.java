@@ -16,7 +16,8 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-@AllArgsConstructor @NoArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class BoockingDto {
 
     @JsonProperty("date_from")
@@ -37,7 +38,7 @@ public class BoockingDto {
     @JsonProperty("room_type")
     private String roomType;
     private List<PeopleDto>people;
-    @JsonProperty("payment_methods")
+    @JsonProperty("payment_method")
     private PaymentMethodsDto payment;
 
 }
