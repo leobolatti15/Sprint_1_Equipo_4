@@ -1,15 +1,16 @@
 package com.example.Sprint1Equipo4.controller;
 
+import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
 import com.example.Sprint1Equipo4.dto.response.HotelDTO;
+import com.example.Sprint1Equipo4.dto.response.ReservationDto;
 import com.example.Sprint1Equipo4.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+
+import org.springframework.web.bind.annotation.*;
+
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,6 +25,7 @@ public class HotelController {
    private HotelService hotelService;
 
    @GetMapping("/hotels")
+
    public ResponseEntity<List<HotelDTO>> listHotels(
            @RequestParam (value="date_from", required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateFrom,
            @RequestParam (value="date_to", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateTo,
@@ -41,3 +43,12 @@ public class HotelController {
       List<HotelDTO> availableHotels = hotelService.findAvailableHotels(dateFrom, dateTo, destination);
       return new ResponseEntity<>(availableHotels, HttpStatus.OK);
    }}
+
+   
+
+   @PostMapping("/booking")
+   public ResponseEntity<ReservationDto> bookHotel(@RequestBody ReservationDtoRequest reservationDtoRequest) {
+      return new ResponseEntity<>(hotelService.bookHotel(reservationDtoRequest), HttpStatus.CREATED);
+   }
+}
+
