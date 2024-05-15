@@ -7,5 +7,8 @@ import java.util.List;
 
 public interface HotelService {
    List<HotelDTO> listHotels();
+
    List<HotelDTO> findAvailableHotels(LocalDate dateFrom, LocalDate dateTo, String destination);
 }
+
+

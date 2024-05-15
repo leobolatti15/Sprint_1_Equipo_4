@@ -25,12 +25,19 @@ public class HotelController {
 
    @GetMapping("/hotels")
    public ResponseEntity<List<HotelDTO>> listHotels(
-           @RequestParam (value="date_from")  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateFrom,
-           @RequestParam (value="date_to") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateTo,
-           @RequestParam (value="destination") String destination) {
+           @RequestParam (value="date_from", required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateFrom,
+           @RequestParam (value="date_to", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateTo,
+           @RequestParam (value="destination", required = false) String destination) {
+
+
+
+      if (dateFrom == null || dateTo == null || destination == null) {
+         List<HotelDTO> allHotels = hotelService.listHotels();
+         System.out.println("Advertencia: Uno o más parámetros están ausentes. Por favor ingresar fechas y destino.");
+         return new ResponseEntity<>(allHotels, HttpStatus.OK);
+
+      }
+
       List<HotelDTO> availableHotels = hotelService.findAvailableHotels(dateFrom, dateTo, destination);
-
       return new ResponseEntity<>(availableHotels, HttpStatus.OK);
-   }
-
-}
+   }}
