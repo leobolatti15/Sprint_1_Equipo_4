@@ -9,10 +9,12 @@ import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.exception.HotelNotFoundException;
 import com.example.Sprint1Equipo4.model.Hotel;
 import com.example.Sprint1Equipo4.repository.HotelRepository;
+import com.example.Sprint1Equipo4.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,7 +66,11 @@ public class HotelServiceImpl implements HotelService {
 
       return availableHotelsDTO;
    }
-   }
+
+
+
+
+
 
 
    //PARA CREAR UNA RESERVA EN HOTEL
@@ -72,16 +78,16 @@ public class HotelServiceImpl implements HotelService {
       Hotel hotelEncontrado = null;
       for (Hotel hotel : availableHotels) {
          if (hotel.getDestination().equalsIgnoreCase(bookingDto.getDestination()) &&
-               isDateRangeAvailable(hotel, bookingDto.getDateFrom(), bookingDto.getDateTo())) {
+                 isDateRangeAvailable(hotel, bookingDto.getDateFrom(), bookingDto.getDateTo())) {
             hotelEncontrado = hotel;
          }
       }
       return hotelEncontrado;
    }
 
-   private boolean isDateRangeAvailable(Hotel hotel, LocalDate dateFrom, LocalDate dateTo) {
-      return !hotel.getReserved() && hotel.getDateFrom().equals(dateFrom) && hotel.getDateTo().equals(dateTo);
-   }
+private boolean isDateRangeAvailable(Hotel hotel, LocalDate dateFrom, LocalDate dateTo) {
+   return !hotel.getReserved() && hotel.getDateFrom().equals(dateFrom) && hotel.getDateTo().equals(dateTo);
+}
 
    private double calculateTotalPrice(Hotel hotel, LocalDate dateFrom, LocalDate dateTo) {
       long nights = dateFrom.until(dateTo).getDays();
@@ -123,4 +129,6 @@ public class HotelServiceImpl implements HotelService {
       return reservationDto;
    }
 }
+
+
 
