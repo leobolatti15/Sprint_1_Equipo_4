@@ -20,6 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 public class BoockingDto {
 
+
     @JsonProperty("date_from")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonDeserialize(using = LocalDateDeserializer.class)
