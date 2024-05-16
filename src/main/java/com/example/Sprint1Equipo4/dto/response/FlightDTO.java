@@ -32,30 +32,4 @@ public class FlightDTO {
     @JsonFormat(pattern ="dd/MM/yyyy")
     private LocalDate returnDate;
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-
-    public static class FlightDTO {
-        @JsonProperty("flight_number")
-        private String flightNumber;
-        private String origin;
-        private String destination;
-        @JsonProperty("seat_type")
-        private String seatType;
-        @JsonProperty("price_per_person")
-        private Integer pricePerPerson;
-        @JsonProperty("date_from")
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-        @JsonDeserialize(using = LocalDateDeserializer.class)
-        @JsonSerialize(using = LocalDateSerializer.class)
-        private LocalDate dateFrom;
-
-        @JsonProperty("date_to")
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-        @JsonDeserialize(using = LocalDateDeserializer.class)
-        @JsonSerialize(using = LocalDateSerializer.class)
-        private LocalDate dateTo;
-
-    }
 }
