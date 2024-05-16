@@ -22,4 +22,18 @@ public class Flight {
     private LocalDate dateFrom;
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dateTo;
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+
+    public static class Flight {
+        private String flightNumber;
+        private String origin;
+        private String destination;
+        private String seatType;
+        private Integer pricePerPerson;
+        private LocalDate dateFrom;
+        private LocalDate dateTo;
+    }
 }
