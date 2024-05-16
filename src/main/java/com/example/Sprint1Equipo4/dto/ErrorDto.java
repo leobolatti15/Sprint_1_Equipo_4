@@ -11,6 +11,4 @@ public class ErrorDto {
    private String description;
    private int status;
 
-   public ErrorDto(String Message, int Status) {
-   }
 }
