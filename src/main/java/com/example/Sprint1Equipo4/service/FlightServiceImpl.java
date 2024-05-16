@@ -1,18 +1,18 @@
 package com.example.Sprint1Equipo4.service;
 
 
+import com.example.Sprint1Equipo4.dto.request.FlightReqDto;
+import com.example.Sprint1Equipo4.dto.request.FlightReservationDto;
 import com.example.Sprint1Equipo4.dto.response.FlightDTO;
-import com.example.Sprint1Equipo4.dto.response.HotelDTO;
+import com.example.Sprint1Equipo4.dto.response.FlightResDto;
+import com.example.Sprint1Equipo4.dto.response.StatusDTO;
+import com.example.Sprint1Equipo4.exception.FlightNotFoundException;
 import com.example.Sprint1Equipo4.model.Flight;
-import com.example.Sprint1Equipo4.model.Hotel;
 import com.example.Sprint1Equipo4.repository.FlightRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 @Service
 public class FlightServiceImpl implements FlightService{
@@ -35,4 +35,55 @@ public class FlightServiceImpl implements FlightService{
                       a.getDateTo()))
               .toList();
    }
+
+       private Flight getFlight(List<Flight> flights, FlightReservationDto fr) {
+          return flights.stream()
+                  .filter(flight -> flight.getOrigin().equalsIgnoreCase(fr.getOrigin()) &&
+                          flight.getDestination().equalsIgnoreCase(fr.getDestination()) &&
+                          flight.getDateFrom().equals(fr.getDateFrom()) &&
+                          flight.getDateTo().equals((fr.getDateTo())))
+                  .findFirst()
+                  .orElseThrow(FlightNotFoundException::new);
+       }
+
+       private Integer getTotalPrice(Flight flight, FlightReservationDto fr){
+             int price= flight.getPricePerPerson();
+          if (fr.getPeople().isEmpty()){
+
+             return 0;
+          }
+          return price * fr.getPeople().size();
+       }
+
+       private double calculateInterest(double totalPrice, int dues) {
+          if (dues > 1) {
+             return totalPrice * 1.3;
+          }
+          return 1;
+       }
+
+       @Override
+       public FlightResDto reserve(FlightReqDto fDto) {
+          List<Flight> flightList = flightRepository.findAll();
+
+          Flight flight = getFlight(flightList,fDto.getFlightReservationDto());
+
+          int amount = getTotalPrice(flight, fDto.getFlightReservationDto());
+          double interest = calculateInterest(amount, fDto.getFlightReservationDto()
+                            .getPaymentMethodsDto().getDues());
+          double total = amount + interest;
+
+          FlightResDto resDto = new FlightResDto();
+          resDto.setUserName(fDto.getUserName());
+          resDto.setAmount(amount);
+          resDto.setInterest(interest);
+          resDto.setTotal(total);
+          resDto.setFlightReservationDto(fDto.getFlightReservationDto());
+          resDto.setStatusDTO(new StatusDTO(201,"El proceso termino satisfactoriamente"));
+
+
+
+          return resDto;
+       }
 }
+
