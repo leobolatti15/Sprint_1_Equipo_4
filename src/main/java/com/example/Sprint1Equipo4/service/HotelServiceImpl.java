@@ -9,6 +9,7 @@ import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.exception.HotelNotFoundException;
 import com.example.Sprint1Equipo4.model.Hotel;
 import com.example.Sprint1Equipo4.repository.HotelRepository;
+import com.example.Sprint1Equipo4.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,20 +24,21 @@ public class HotelServiceImpl implements HotelService {
 
    @Autowired
    HotelRepository hotelRepository;
+
    @Override
    public List<HotelDTO> listHotels() {
       List<Hotel> listHotel = hotelRepository.findAll();
       return listHotel.stream()
-            .map(a -> new HotelDTO(
-                  a.getHotelCode(),
-                  a.getName(),
-                  a.getDestination(),
-                  a.getRoomType(),
-                  a.getPricePerNight(),
-                  a.getDateFrom(),
-                  a.getDateTo(),
-                  a.getReserved()))
-                  .toList();
+              .map(a -> new HotelDTO(
+                      a.getHotelCode(),
+                      a.getName(),
+                      a.getDestination(),
+                      a.getRoomType(),
+                      a.getPricePerNight(),
+                      a.getDateFrom(),
+                      a.getDateTo(),
+                      a.getReserved()))
+              .toList();
    }
 
 
@@ -65,12 +67,6 @@ public class HotelServiceImpl implements HotelService {
 
       return availableHotelsDTO;
    }
-
-   @Override
-   public ReservationDto bookHotel(ReservationDtoRequest reservationDtoRequest) {
-      return null;
-   }
-}
 
 
    //PARA CREAR UNA RESERVA EN HOTEL
@@ -105,8 +101,8 @@ public class HotelServiceImpl implements HotelService {
       List<Hotel> allHotels = hotelRepository.findAll();
       // Filtrar hoteles que no están reservados por si cambia a true
       List<Hotel> availableHotels = allHotels.stream()
-            .filter(hotel -> !hotel.getReserved())
-            .collect(Collectors.toList());
+              .filter(hotel -> !hotel.getReserved())
+              .collect(Collectors.toList());
 
       Hotel selectedHotel = selectHotel(availableHotels, reservationDtoRequest.getBooking());
 
@@ -128,5 +124,5 @@ public class HotelServiceImpl implements HotelService {
 
       return reservationDto;
    }
-}
 
+}

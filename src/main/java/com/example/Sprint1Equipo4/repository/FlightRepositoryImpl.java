@@ -14,41 +14,44 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
-@Repository
-public class FlightRepositoryImpl implements FlightRepository{
 
-    private List<Flight> flights;
 
-    public FlightRepositoryImpl() {
-        this.flights = loadData();
-    }
+    @Repository
+    public class FlightRepositoryImpl implements FlightRepository{
 
-    @Override
-    public List<Flight> findAll() {
-        return flights;
-    }
+        private List<Flight> flights;
 
-    private List<Flight> loadData() {
-        List<Flight> loadedData = null;
-        File file;
-
-        ObjectMapper objectMapper = new ObjectMapper()
-                .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
-                .registerModule(new JavaTimeModule());
-
-        TypeReference<List<Flight>> typeRef = new TypeReference<>() {
-        };
-
-        try {
-            file = ResourceUtils.getFile("classpath:vuelo.json");
-            loadedData = objectMapper.readValue(file, typeRef);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            System.out.println("Failed while initializing DB, check your resources files");
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Failed while initializing DB, check your JSON formatting.");
+        public FlightRepositoryImpl() {
+            this.flights = loadData();
         }
-        return loadedData;
+
+        @Override
+        public List<Flight> findAll() {
+            return flights;
+        }
+
+        private List<Flight> loadData() {
+            List<Flight> loadedData = null;
+            File file;
+
+            ObjectMapper objectMapper = new ObjectMapper()
+                    .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
+                    .registerModule(new JavaTimeModule());
+
+            TypeReference<List<Flight>> typeRef = new TypeReference<>() {
+            };
+
+            try {
+                file = ResourceUtils.getFile("classpath:vuelo.json");
+                loadedData = objectMapper.readValue(file, typeRef);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                System.out.println("Failed while initializing DB, check your resources files");
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Failed while initializing DB, check your JSON formatting.");
+            }
+            return loadedData;
+        }
     }
 }
