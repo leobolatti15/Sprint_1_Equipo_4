@@ -12,7 +12,9 @@ import com.example.Sprint1Equipo4.repository.FlightRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FlightServiceImpl implements FlightService{
@@ -36,7 +38,31 @@ public class FlightServiceImpl implements FlightService{
               .toList();
    }
 
-       private Flight getFlight(List<Flight> flights, FlightReservationDto fr) {
+    @Override
+    public List<FlightDTO> flightsAvailable(LocalDate dateFrom, LocalDate dateTo, String origin, String destination) {
+        List<Flight> listFlight = flightRepository.findAll();
+        List<Flight> availableFlights = listFlight.stream()
+                .filter(flight -> flight.getDestination().equals(destination))
+                .filter(flight -> flight.getOrigin().equals(origin))
+                .filter(flight -> !flight.getDateFrom().isAfter(dateTo))
+                .filter(flight -> !flight.getDateTo().isBefore(dateFrom))
+                .collect(Collectors.toList());
+
+
+        return availableFlights.stream()
+                .map(flight -> new FlightDTO(
+                        flight.getFlightNumber(),
+                        flight.getOrigin(),
+                        flight.getDestination(),
+                        flight.getSeatType(),
+                        flight.getPricePerPerson(),
+                        flight.getDateFrom(),
+                        flight.getDateTo()))
+                .collect(Collectors.toList());
+    }
+
+
+    private Flight getFlight(List<Flight> flights, FlightReservationDto fr) {
           return flights.stream()
                   .filter(flight -> flight.getOrigin().equalsIgnoreCase(fr.getOrigin()) &&
                           flight.getDestination().equalsIgnoreCase(fr.getDestination()) &&
