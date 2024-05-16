@@ -3,6 +3,7 @@ package com.example.Sprint1Equipo4.config;
 import com.example.Sprint1Equipo4.dto.ErrorDto;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.exception.FlightNotFoundException;
+
 import com.example.Sprint1Equipo4.exception.HotelNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
