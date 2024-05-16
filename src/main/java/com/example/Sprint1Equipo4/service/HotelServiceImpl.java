@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,7 +65,12 @@ public class HotelServiceImpl implements HotelService {
 
       return availableHotelsDTO;
    }
+
+   @Override
+   public ReservationDto bookHotel(ReservationDtoRequest reservationDtoRequest) {
+      return null;
    }
+}
 
 
    //PARA CREAR UNA RESERVA EN HOTEL
@@ -72,7 +78,7 @@ public class HotelServiceImpl implements HotelService {
       Hotel hotelEncontrado = null;
       for (Hotel hotel : availableHotels) {
          if (hotel.getDestination().equalsIgnoreCase(bookingDto.getDestination()) &&
-               isDateRangeAvailable(hotel, bookingDto.getDateFrom(), bookingDto.getDateTo())) {
+                 isDateRangeAvailable(hotel, bookingDto.getDateFrom(), bookingDto.getDateTo())) {
             hotelEncontrado = hotel;
          }
       }
