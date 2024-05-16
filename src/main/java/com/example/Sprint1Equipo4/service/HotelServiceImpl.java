@@ -6,6 +6,7 @@ import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
 import com.example.Sprint1Equipo4.dto.response.HotelDTO;
 import com.example.Sprint1Equipo4.dto.response.ReservationDto;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
+import com.example.Sprint1Equipo4.exception.DateOutOfRangeException;
 import com.example.Sprint1Equipo4.exception.HotelNotFoundException;
 import com.example.Sprint1Equipo4.model.Hotel;
 import com.example.Sprint1Equipo4.repository.HotelRepository;
@@ -66,6 +67,24 @@ public class HotelServiceImpl implements HotelService {
       }
 
       return availableHotelsDTO;
+   }
+
+   public void validateDateRange(LocalDate dateFrom, LocalDate dateTo, String destination) {
+      if (dateFrom.isAfter(dateTo)) {
+         throw new DateOutOfRangeException();
+      }
+
+      List<Hotel> hotels = hotelRepository.findAll();
+      boolean isInRange = hotels.stream()
+              .filter(hotel -> hotel.getDestination().equals(destination))
+              .anyMatch(hotel ->
+                      (dateFrom.isAfter(hotel.getDateFrom()) || dateFrom.equals(hotel.getDateFrom())) &&
+                              (dateTo.isBefore(hotel.getDateTo()) || dateTo.equals(hotel.getDateTo()))
+              );
+
+      if (!isInRange) {
+         throw new DateOutOfRangeException();
+      }
    }
 
 

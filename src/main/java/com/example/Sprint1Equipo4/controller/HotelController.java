@@ -40,6 +40,8 @@ public class HotelController {
 
       }
 
+      hotelService.validateDateRange(dateFrom, dateTo, destination);
+
       List<HotelDTO> availableHotels = hotelService.findAvailableHotels(dateFrom, dateTo, destination);
       return new ResponseEntity<>(availableHotels, HttpStatus.OK);
    }
