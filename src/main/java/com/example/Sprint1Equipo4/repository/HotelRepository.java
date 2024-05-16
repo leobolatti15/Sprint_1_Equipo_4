@@ -1,0 +1,8 @@
+package com.example.Sprint1Equipo4.repository;
+
+import com.example.Sprint1Equipo4.model.Hotel;
+import java.util.List;
+
+public interface HotelRepository {
+   List<Hotel> findAll();
+}
