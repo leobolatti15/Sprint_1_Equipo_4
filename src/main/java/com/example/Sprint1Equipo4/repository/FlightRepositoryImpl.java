@@ -17,14 +17,15 @@ import java.util.List;
 
 @Repository
 public class FlightRepositoryImpl implements FlightRepository {
-
-
-
    private List<Flight> flights;
 
    public FlightRepositoryImpl() {
       this.flights = loadData();
    }
+
+   @Override
+   public List<Flight> findAll() {
+      return flights;
 
     @Override
     public List<Flight> findAll() {
@@ -83,3 +84,4 @@ public class FlightRepositoryImpl implements FlightRepository {
       return loadedData;
    }
 }
+

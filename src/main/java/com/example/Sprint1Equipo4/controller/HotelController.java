@@ -44,11 +44,19 @@ public class HotelController {
       return new ResponseEntity<>(availableHotels, HttpStatus.OK);
    }
 
-   
-
    @PostMapping("/booking")
    public ResponseEntity<ReservationDto> bookHotel(@RequestBody ReservationDtoRequest reservationDtoRequest) {
       return new ResponseEntity<>(hotelService.bookHotel(reservationDtoRequest), HttpStatus.CREATED);
+   }
+
+   @GetMapping("/hotel/{hotelCode}")
+   public ResponseEntity<HotelDTO> searchByCode(@PathVariable String hotelCode) {
+      return new ResponseEntity<>(hotelService.searchByCode(hotelCode), HttpStatus.OK);
+   }
+
+   @PutMapping("/hotel/{hotelCode}")
+   public ResponseEntity<HotelDTO> updateHotel(@RequestBody HotelDTO hotelDTO, @PathVariable String hotelCode) {
+      return new ResponseEntity<>(hotelService.updateHotel(hotelDTO), HttpStatus.OK);
    }
 }
 

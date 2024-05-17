@@ -1,7 +1,6 @@
 package com.example.Sprint1Equipo4.service;
 
 import com.example.Sprint1Equipo4.dto.request.BoockingDto;
-import com.example.Sprint1Equipo4.dto.request.PaymentMethodsDto;
 import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
 import com.example.Sprint1Equipo4.dto.response.HotelDTO;
 import com.example.Sprint1Equipo4.dto.response.ReservationDto;
@@ -10,7 +9,6 @@ import com.example.Sprint1Equipo4.exception.DateOutOfRangeException;
 import com.example.Sprint1Equipo4.exception.HotelNotFoundException;
 import com.example.Sprint1Equipo4.model.Hotel;
 import com.example.Sprint1Equipo4.repository.HotelRepository;
-import com.example.Sprint1Equipo4.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +40,42 @@ public class HotelServiceImpl implements HotelService {
               .toList();
    }
 
+   @Override
+   public HotelDTO searchByCode(String hotelCode) {
+      Hotel hotel = hotelRepository.findByCode(hotelCode);
+      if (!hotelRepository.existsByCode(hotelCode)) {
+         throw new HotelNotFoundException();
+      } else {
+         return new HotelDTO(
+               hotel.getHotelCode(),
+               hotel.getName(),
+               hotel.getDestination(),
+               hotel.getRoomType(),
+               hotel.getPricePerNight(),
+               hotel.getDateFrom(),
+               hotel.getDateTo(),
+               hotel.getReserved());}
+   }
+
+   @Override
+   public Boolean existsHotel(String hotelCode) {
+      return hotelRepository.existsByCode(hotelCode);
+   }
+
+   @Override
+   public HotelDTO updateHotel(HotelDTO hotelDTO) {
+      Hotel hotel = new Hotel();
+      hotel.setHotelCode(hotelDTO.getHotelCode());
+      hotel.setName(hotelDTO.getName());
+      hotel.setDestination(hotelDTO.getDestination());
+      hotel.setRoomType(hotelDTO.getRoomType());
+      hotel.setPricePerNight(hotelDTO.getPricePerNight());
+      hotel.setDateFrom(hotelDTO.getDateFrom());
+      hotel.setDateTo(hotelDTO.getDateTo());
+
+      hotelRepository.update(hotel);
+      return hotelDTO;
+   }
 
    @Override
    public List<HotelDTO> findAvailableHotels(LocalDate dateFrom, LocalDate dateTo, String destination) {

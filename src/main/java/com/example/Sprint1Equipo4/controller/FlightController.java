@@ -24,6 +24,7 @@ public class FlightController {
     @Autowired
     private FlightService flightService;
 
+
     @GetMapping("/flight")
     public ResponseEntity<List<FlightDTO>> listFlight(
             @DateTimeFormat(pattern = "dd/MM/yyyy") @RequestParam(required = false) LocalDate date_from,
@@ -63,7 +64,6 @@ public class FlightController {
     public ResponseEntity<ResponseFlightDTO> deleteFlight(@PathVariable String name){
         return new ResponseEntity<>(flightService.deleteFlight(name), HttpStatus.OK);
     }
-
 
     @PostMapping("/flight-reservation")
     public ResponseEntity<FlightResDto> reserve(@RequestBody FlightReqDto flightReqDto){
