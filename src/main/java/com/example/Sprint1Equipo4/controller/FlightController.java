@@ -24,7 +24,7 @@ public class FlightController {
     @Autowired
     private FlightService flightService;
 
-    @GetMapping("/flights")
+    @GetMapping("/flight")
     public ResponseEntity<List<FlightDTO>> listFlight(
             @DateTimeFormat(pattern = "dd/MM/yyyy") @RequestParam(required = false) LocalDate date_from,
             @DateTimeFormat(pattern = "dd/MM/yyyy") @RequestParam(required = false) LocalDate date_to,
@@ -53,13 +53,13 @@ public class FlightController {
         return new ResponseEntity<>(flightService.listFlights(), HttpStatus.OK);
     }
 
-    @GetMapping("/flights/{name}")
+    @GetMapping("/flight/{name}")
     public ResponseEntity<FlightDTO> findByFlightName(@PathVariable String name){
         FlightDTO flightDTO = flightService.findByFlightName(name);
         return new ResponseEntity<>(flightDTO, HttpStatus.OK);
     }
 
-    @DeleteMapping("/borrarVuelo/{name}")
+    @DeleteMapping("/flight/{name}")
     public ResponseEntity<ResponseFlightDTO> deleteFlight(@PathVariable String name){
         return new ResponseEntity<>(flightService.deleteFlight(name), HttpStatus.OK);
     }
@@ -74,8 +74,8 @@ public class FlightController {
         return new ResponseEntity<>(flightService.create(flightDTO),HttpStatus.CREATED);
     }
 
-    @PutMapping("/flight")
-    public ResponseEntity<Flight> upDate(@RequestBody FlightDTO flightDTO){
+    @PutMapping("/flight/{name}")
+    public ResponseEntity<Flight> upDate(@RequestBody FlightDTO flightDTO,@PathVariable String name){
         return new ResponseEntity<>(flightService.upDate(flightDTO),HttpStatus.OK);
     }
 
