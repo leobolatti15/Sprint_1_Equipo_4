@@ -26,11 +26,7 @@ public class FlightRepositoryImpl implements FlightRepository {
    @Override
    public List<Flight> findAll() {
       return flights;
-
-    @Override
-    public List<Flight> findAll() {
-        return flights;
-    }
+   }
 
    @Override
    public Flight findByName(String name) {
