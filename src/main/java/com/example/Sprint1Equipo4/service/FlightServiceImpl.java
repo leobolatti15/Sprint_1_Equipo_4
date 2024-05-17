@@ -5,6 +5,7 @@ import com.example.Sprint1Equipo4.dto.request.FlightReqDto;
 import com.example.Sprint1Equipo4.dto.request.FlightReservationDto;
 import com.example.Sprint1Equipo4.dto.response.FlightDTO;
 import com.example.Sprint1Equipo4.dto.response.FlightResDto;
+import com.example.Sprint1Equipo4.dto.response.ResponseFlightDTO;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.exception.FlightNotFoundException;
 import com.example.Sprint1Equipo4.model.Flight;
@@ -36,6 +37,25 @@ public class FlightServiceImpl implements FlightService {
                   a.getDateFrom(),
                   a.getDateTo()))
             .toList();
+   }
+
+   @Override
+   public FlightDTO findByFlightName(String name){
+      Flight flight = flightRepository.findByName(name);
+      return new FlightDTO(
+            flight.getFlightNumber(),
+            flight.getOrigin(),
+            flight.getDestination(),
+            flight.getSeatType(),
+              flight.getPricePerPerson(),
+              flight.getDateFrom(),
+              flight.getDateTo());
+   }
+
+   @Override
+   public ResponseFlightDTO deleteFlight(String name){
+      flightRepository.delete(name);
+      return new ResponseFlightDTO("El vuelo fue borrado correctamente");
    }
 
    @Override
