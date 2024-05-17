@@ -22,4 +22,5 @@ public class Flight {
     private LocalDate dateFrom;
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dateTo;
+
 }
