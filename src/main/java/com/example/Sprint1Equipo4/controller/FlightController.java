@@ -4,6 +4,7 @@ import com.example.Sprint1Equipo4.dto.request.FlightReqDto;
 import com.example.Sprint1Equipo4.dto.response.FlightDTO;
 import com.example.Sprint1Equipo4.dto.response.FlightResDto;
 import com.example.Sprint1Equipo4.dto.response.HotelDTO;
+import com.example.Sprint1Equipo4.model.Flight;
 import com.example.Sprint1Equipo4.service.FlightService;
 import com.example.Sprint1Equipo4.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,16 @@ public class FlightController {
     @PostMapping("/flight-reservation")
     public ResponseEntity<FlightResDto> reserve(@RequestBody FlightReqDto flightReqDto){
         return new ResponseEntity<>(flightService.reserve(flightReqDto),HttpStatus.CREATED);
+    }
+
+    @PostMapping("/flight")
+    public ResponseEntity<Flight> create(@RequestBody FlightDTO flightDTO){
+        return new ResponseEntity<>(flightService.create(flightDTO),HttpStatus.CREATED);
+    }
+
+    @PutMapping("/flight")
+    public ResponseEntity<Flight> upDate(@RequestBody FlightDTO flightDTO){
+        return new ResponseEntity<>(flightService.upDate(flightDTO),HttpStatus.OK);
     }
 
 }

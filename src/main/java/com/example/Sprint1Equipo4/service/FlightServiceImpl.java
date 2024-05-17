@@ -111,5 +111,36 @@ public class FlightServiceImpl implements FlightService{
 
           return resDto;
        }
+
+    @Override
+    public Flight create(FlightDTO flight) {
+       int flag = 0;
+        Flight newFlight = new Flight();
+        newFlight.setFlightNumber(flight.getFlightNumber());
+        newFlight.setOrigin(flight.getOrigin());
+        newFlight.setDestination(flight.getDestination());
+        newFlight.setSeatType(flight.getSeatType());
+        newFlight.setPricePerPerson(flight.getPricePerPerson());
+        newFlight.setDateFrom(flight.getDepartureDate());
+        newFlight.setDateTo(flight.getReturnDate());
+        flightRepository.save(newFlight);
+        return newFlight;
+    }
+
+    @Override
+    public Flight upDate(FlightDTO flight) {
+
+        Flight flightChek = new Flight();
+        flightChek.setFlightNumber(flight.getFlightNumber());
+        flightChek.setOrigin(flight.getOrigin());
+        flightChek.setDestination(flight.getDestination());
+        flightChek.setSeatType(flight.getSeatType());
+        flightChek.setPricePerPerson(flight.getPricePerPerson());
+        flightChek.setDateFrom(flight.getDepartureDate());
+        flightChek.setDateTo(flight.getReturnDate());
+        flightRepository.upDate(flightChek);
+        return flightChek;
+
+    }
 }
 

@@ -30,6 +30,22 @@ import java.util.List;
             return flights;
         }
 
+        @Override
+        public Flight save(Flight flight) {
+             flights.add(flight);
+             return flight;
+        }
+
+        @Override
+        public Flight upDate(Flight flight) {
+//            Flight getFlight = findByName(name);
+//            flight.setFlightNumber(getFlight.getFlightNumber());
+//            flights.remove(getFlight);
+//            flights.add(flight);
+//            return flight;
+            return null;
+        }
+
         private List<Flight> loadData() {
             List<Flight> loadedData = null;
             File file;
