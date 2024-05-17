@@ -4,6 +4,7 @@ import com.example.Sprint1Equipo4.dto.ErrorDto;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.exception.DateOutOfRangeException;
 import com.example.Sprint1Equipo4.exception.FlightNotFoundException;
+import com.example.Sprint1Equipo4.exception.FlightNotFoundException;
 import com.example.Sprint1Equipo4.exception.HotelNotFoundException;
 import com.example.Sprint1Equipo4.exception.MissingParameterException;
 import org.springframework.http.HttpStatus;
