@@ -5,6 +5,7 @@ import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
 import com.example.Sprint1Equipo4.dto.response.HotelDTO;
 import com.example.Sprint1Equipo4.dto.response.ReservationDto;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
+import com.example.Sprint1Equipo4.exception.DateOutOfRangeException;
 import com.example.Sprint1Equipo4.exception.HotelNotFoundException;
 import com.example.Sprint1Equipo4.model.Hotel;
 import com.example.Sprint1Equipo4.repository.HotelRepository;
@@ -22,20 +23,21 @@ public class HotelServiceImpl implements HotelService {
 
    @Autowired
    HotelRepository hotelRepository;
+
    @Override
    public List<HotelDTO> listHotels() {
       List<Hotel> listHotel = hotelRepository.findAll();
       return listHotel.stream()
-            .map(a -> new HotelDTO(
-                  a.getHotelCode(),
-                  a.getName(),
-                  a.getDestination(),
-                  a.getRoomType(),
-                  a.getPricePerNight(),
-                  a.getDateFrom(),
-                  a.getDateTo(),
-                  a.getReserved()))
-                  .toList();
+              .map(a -> new HotelDTO(
+                      a.getHotelCode(),
+                      a.getName(),
+                      a.getDestination(),
+                      a.getRoomType(),
+                      a.getPricePerNight(),
+                      a.getDateFrom(),
+                      a.getDateTo(),
+                      a.getReserved()))
+              .toList();
    }
 
    @Override
@@ -101,10 +103,23 @@ public class HotelServiceImpl implements HotelService {
       return availableHotelsDTO;
    }
 
+   public void validateDateRange(LocalDate dateFrom, LocalDate dateTo, String destination) {
+      if (dateFrom.isAfter(dateTo)) {
+         throw new DateOutOfRangeException();
+      }
 
+      List<Hotel> hotels = hotelRepository.findAll();
+      boolean isInRange = hotels.stream()
+              .filter(hotel -> hotel.getDestination().equals(destination))
+              .anyMatch(hotel ->
+                      (dateFrom.isAfter(hotel.getDateFrom()) || dateFrom.equals(hotel.getDateFrom())) &&
+                              (dateTo.isBefore(hotel.getDateTo()) || dateTo.equals(hotel.getDateTo()))
+              );
 
-
-
+      if (!isInRange) {
+         throw new DateOutOfRangeException();
+      }
+   }
 
 
    //PARA CREAR UNA RESERVA EN HOTEL
@@ -119,9 +134,9 @@ public class HotelServiceImpl implements HotelService {
       return hotelEncontrado;
    }
 
-private boolean isDateRangeAvailable(Hotel hotel, LocalDate dateFrom, LocalDate dateTo) {
-   return !hotel.getReserved() && hotel.getDateFrom().equals(dateFrom) && hotel.getDateTo().equals(dateTo);
-}
+   private boolean isDateRangeAvailable(Hotel hotel, LocalDate dateFrom, LocalDate dateTo) {
+      return !hotel.getReserved() && hotel.getDateFrom().equals(dateFrom) && hotel.getDateTo().equals(dateTo);
+   }
 
    private double calculateTotalPrice(Hotel hotel, LocalDate dateFrom, LocalDate dateTo) {
       long nights = dateFrom.until(dateTo).getDays();
@@ -139,8 +154,8 @@ private boolean isDateRangeAvailable(Hotel hotel, LocalDate dateFrom, LocalDate 
       List<Hotel> allHotels = hotelRepository.findAll();
       // Filtrar hoteles que no están reservados por si cambia a true
       List<Hotel> availableHotels = allHotels.stream()
-            .filter(hotel -> !hotel.getReserved())
-            .collect(Collectors.toList());
+              .filter(hotel -> !hotel.getReserved())
+              .collect(Collectors.toList());
 
       Hotel selectedHotel = selectHotel(availableHotels, reservationDtoRequest.getBooking());
 
@@ -162,7 +177,5 @@ private boolean isDateRangeAvailable(Hotel hotel, LocalDate dateFrom, LocalDate 
 
       return reservationDto;
    }
+
 }
-
-
-

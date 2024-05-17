@@ -25,6 +25,7 @@ public interface HotelService {
 
    ReservationDto bookHotel(ReservationDtoRequest reservationDtoRequest);
 
+   void validateDateRange(LocalDate dateFrom, LocalDate dateTo, String destination);
 }
 
 
