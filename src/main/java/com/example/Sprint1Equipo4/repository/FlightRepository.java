@@ -4,4 +4,6 @@ import java.util.List;
 
 public interface FlightRepository {
     List<Flight> findAll();
+    Flight findByName(String name);
+    boolean delete(String name);
 }

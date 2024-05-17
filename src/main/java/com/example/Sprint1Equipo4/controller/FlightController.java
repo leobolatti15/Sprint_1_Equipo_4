@@ -4,6 +4,7 @@ import com.example.Sprint1Equipo4.dto.request.FlightReqDto;
 import com.example.Sprint1Equipo4.dto.response.FlightDTO;
 import com.example.Sprint1Equipo4.dto.response.FlightResDto;
 import com.example.Sprint1Equipo4.dto.response.HotelDTO;
+import com.example.Sprint1Equipo4.dto.response.ResponseFlightDTO;
 import com.example.Sprint1Equipo4.service.FlightService;
 import com.example.Sprint1Equipo4.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,17 @@ public class FlightController {
 
     public ResponseEntity<List<FlightDTO>> listFlights() {
         return new ResponseEntity<>(flightService.listFlights(), HttpStatus.OK);
+    }
+
+    @GetMapping("/flights/{name}")
+    public ResponseEntity<FlightDTO> findByFlightName(@PathVariable String name){
+        FlightDTO flightDTO = flightService.findByFlightName(name);
+        return new ResponseEntity<>(flightDTO, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/borrarVuelo/{name}")
+    public ResponseEntity<ResponseFlightDTO> deleteFlight(@PathVariable String name){
+        return new ResponseEntity<>(flightService.deleteFlight(name), HttpStatus.OK);
     }
 
 

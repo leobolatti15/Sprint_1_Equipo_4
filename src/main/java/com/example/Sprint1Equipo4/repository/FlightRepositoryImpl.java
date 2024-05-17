@@ -29,6 +29,19 @@ public class FlightRepositoryImpl implements FlightRepository {
       return flights;
    }
 
+   @Override
+   public Flight findByName(String name) {
+      Flight flight = flights.stream().filter(a->a.getFlightNumber().equals(name)).findFirst().orElse(null);
+      return flight;
+   }
+
+   @Override
+   public boolean delete(String name){
+      Flight flightFound = findByName(name);
+      flights.remove(flightFound);
+      return true;
+   }
+
    private List<Flight> loadData() {
       List<Flight> loadedData = null;
       File file;
