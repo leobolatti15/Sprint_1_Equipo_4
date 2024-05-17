@@ -27,7 +27,7 @@ public class ExceptionHandlerController {
 
    @ExceptionHandler(MissingParameterException.class)
    public ResponseEntity<ErrorDto> handleMissingParameterException(MissingParameterException ex) {
-      ErrorDto error = new ErrorDto("Falta pasar parámetros", 400);
+      ErrorDto error = new ErrorDto("Faltan uno o más parámetros: date_from, date_to, destination", 400);
       return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
    }
 

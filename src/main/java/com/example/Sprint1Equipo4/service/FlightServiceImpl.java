@@ -6,8 +6,10 @@ import com.example.Sprint1Equipo4.dto.request.FlightReservationDto;
 import com.example.Sprint1Equipo4.dto.response.FlightDTO;
 import com.example.Sprint1Equipo4.dto.response.FlightResDto;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
+import com.example.Sprint1Equipo4.exception.DateOutOfRangeException;
 import com.example.Sprint1Equipo4.exception.FlightNotFoundException;
 import com.example.Sprint1Equipo4.model.Flight;
+import com.example.Sprint1Equipo4.model.Hotel;
 import com.example.Sprint1Equipo4.repository.FlightRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,6 +61,24 @@ public class FlightServiceImpl implements FlightService{
                         flight.getDateFrom(),
                         flight.getDateTo()))
                 .collect(Collectors.toList());
+    }
+
+    public void validateDateRangeFlight(LocalDate dateFrom, LocalDate dateTo, String destination) {
+        if (dateFrom.isAfter(dateTo)) {
+            throw new DateOutOfRangeException();
+        }
+
+        List<Flight> flights = flightRepository.findAll();
+        boolean isInRange = flights.stream()
+                .filter(flight -> flight.getDestination().equals(destination))
+                .anyMatch(flight ->
+                        (dateFrom.isAfter(flight.getDateFrom()) || dateFrom.equals(flight.getDateFrom())) &&
+                                (dateTo.isBefore(flight.getDateTo()) || dateTo.equals(flight.getDateTo()))
+                );
+
+        if (!isInRange) {
+            throw new DateOutOfRangeException();
+        }
     }
 
 

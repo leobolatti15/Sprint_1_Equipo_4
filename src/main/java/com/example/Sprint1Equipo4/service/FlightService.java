@@ -12,5 +12,7 @@ import java.util.List;
         List<FlightDTO> flightsAvailable(LocalDate dateFrom, LocalDate dateTo, String origin, String destination);
         FlightResDto reserve(FlightReqDto flight);
 
+        void validateDateRangeFlight(LocalDate dateFrom, LocalDate dateTo, String destination);
+
     }
 
