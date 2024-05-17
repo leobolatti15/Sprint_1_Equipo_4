@@ -4,6 +4,7 @@ import com.example.Sprint1Equipo4.dto.request.FlightReqDto;
 import com.example.Sprint1Equipo4.dto.response.FlightDTO;
 import com.example.Sprint1Equipo4.dto.response.FlightResDto;
 import com.example.Sprint1Equipo4.dto.response.HotelDTO;
+import com.example.Sprint1Equipo4.exception.MissingParameterException;
 import com.example.Sprint1Equipo4.service.FlightService;
 import com.example.Sprint1Equipo4.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,16 @@ public class FlightController {
             @RequestParam(required = false) String destination) {
 
 
-        if (date_from != null && date_to != null && origin!=null && destination != null) {
-            List<FlightDTO> flightsAvailable = flightService.flightsAvailable(date_from, date_to,
-                    origin,destination);
+        boolean paramsPresent = (date_from != null || date_to != null || origin != null || destination != null);
+
+        if (paramsPresent) {
+            if (date_from == null || date_to == null || origin == null || destination == null) {
+                throw new MissingParameterException();
+            }
+
+            flightService.validateDateRangeFlight(date_from, date_to, destination);
+
+            List<FlightDTO> flightsAvailable = flightService.flightsAvailable(date_from, date_to, origin, destination);
             if (flightsAvailable.isEmpty()) {
                 throw new NullPointerException();
             }
@@ -42,10 +50,41 @@ public class FlightController {
             if (allFlights.isEmpty()) {
                 throw new NullPointerException();
             }
-            return  new ResponseEntity<>(allFlights, HttpStatus.OK);
+            return new ResponseEntity<>(allFlights, HttpStatus.OK);
         }
     }
 
+//        if (date_from != null && date_to != null && origin!=null && destination != null) {
+//
+//            flightService.validateDateRangeFlight(date_from, date_to, destination);
+//
+//            List<FlightDTO> flightsAvailable = flightService.flightsAvailable(date_from, date_to,
+//                    origin,destination);
+//            if (flightsAvailable.isEmpty()) {
+//                throw new NullPointerException();
+//            }
+//            return new ResponseEntity<>(flightsAvailable, HttpStatus.OK);
+//        } else {
+//            List<FlightDTO> allFlights = flightService.listFlights();
+//            if (allFlights.isEmpty()) {
+//                throw new NullPointerException();
+//            }
+//            return  new ResponseEntity<>(allFlights, HttpStatus.OK);
+//        }
+//    }
+
+//        if (date_from == null || date_to == null || origin == null || destination == null) {
+//            throw new MissingParameterException();
+//        }
+//
+//        flightService.validateDateRangeFlight(date_from, date_to, destination);
+//
+//        List<FlightDTO> flightsAvailable = flightService.flightsAvailable(date_from, date_to, origin, destination);
+//        if (flightsAvailable.isEmpty()) {
+//            throw new NullPointerException();
+//        }
+//        return new ResponseEntity<>(flightsAvailable, HttpStatus.OK);
+//    }
 
     public ResponseEntity<List<FlightDTO>> listFlights() {
         return new ResponseEntity<>(flightService.listFlights(), HttpStatus.OK);

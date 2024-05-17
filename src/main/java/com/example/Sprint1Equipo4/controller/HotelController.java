@@ -3,6 +3,7 @@ package com.example.Sprint1Equipo4.controller;
 import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
 import com.example.Sprint1Equipo4.dto.response.HotelDTO;
 import com.example.Sprint1Equipo4.dto.response.ReservationDto;
+import com.example.Sprint1Equipo4.exception.MissingParameterException;
 import com.example.Sprint1Equipo4.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -33,12 +34,16 @@ public class HotelController {
 
 
 
-      if (dateFrom == null || dateTo == null || destination == null) {
+      if (dateFrom == null & dateTo == null & destination == null) {
          List<HotelDTO> allHotels = hotelService.listHotels();
-         System.out.println("Advertencia: Uno o más parámetros están ausentes. Por favor ingresar fechas y destino.");
+//         System.out.println("Advertencia: Uno o más parámetros están ausentes. Por favor ingresar fechas y destino.");
          return new ResponseEntity<>(allHotels, HttpStatus.OK);
 
       }
+
+        if (dateFrom == null || dateTo == null || destination == null) {
+           throw new MissingParameterException();
+        }
 
       hotelService.validateDateRange(dateFrom, dateTo, destination);
 
