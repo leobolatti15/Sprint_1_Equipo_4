@@ -3,6 +3,7 @@ package com.example.Sprint1Equipo4.controller;
 import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
 import com.example.Sprint1Equipo4.dto.response.HotelDTO;
 import com.example.Sprint1Equipo4.dto.response.ReservationDto;
+import com.example.Sprint1Equipo4.exception.MissingParameterException;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +28,18 @@ public class HotelController {
            @RequestParam(value="date_to", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateTo,
            @RequestParam(value="destination", required = false) String destination) {
 
-      if (dateFrom == null || dateTo == null || destination == null) {
+      if (dateFrom == null & dateTo == null & destination == null) {
          List<HotelDTO> allHotels = hotelService.listHotels();
-         return ResponseEntity.ok(allHotels);
+
+//         System.out.println("Advertencia: Uno o más parámetros están ausentes. Por favor ingresar fechas y destino.");
+         return new ResponseEntity<>(allHotels, HttpStatus.OK);
+
+
       }
+
+        if (dateFrom == null || dateTo == null || destination == null) {
+           throw new MissingParameterException();
+        }
 
       hotelService.validateDateRange(dateFrom, dateTo, destination);
 

@@ -17,5 +17,7 @@ import java.util.List;
         ResponseFlightDTO deleteFlight(String name);
         Flight create(FlightDTO flight);
         Flight upDate(FlightDTO flight);
+
+        void validateDateRangeFlight(LocalDate dateFrom, LocalDate dateTo, String destination);
     }
 
