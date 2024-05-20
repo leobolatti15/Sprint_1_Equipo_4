@@ -121,7 +121,7 @@ public class FlightServiceImpl implements FlightService {
           double total = amount + interest;
 
           FlightResDto resDto = new FlightResDto();
-          resDto.setUserName(fDto.getUserName());
+          resDto.setUserName(fDto.getFlightReservationDto().getPeople().getFirst().getEmail());
           resDto.setAmount(amount);
           resDto.setInterest(interest);
           resDto.setTotal(total);
