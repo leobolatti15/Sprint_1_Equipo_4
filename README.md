@@ -1,5 +1,7 @@
 # Sprint_1_Equipo_4
-https://github.com/leobolatti15/Sprint_1_Equipo_4  La colección del proyecto se encuentra en la carpeta resources
+https://github.com/leobolatti15/Sprint_1_Equipo_4
+
+La colección del proyecto se encuentra en la carpeta resources
 
 ## Miembros del equipo y responsables de cada tarea
 Todos los miembros: US-0001
