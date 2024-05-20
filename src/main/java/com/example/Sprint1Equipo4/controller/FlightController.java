@@ -5,6 +5,7 @@ import com.example.Sprint1Equipo4.dto.response.FlightDTO;
 import com.example.Sprint1Equipo4.dto.response.FlightResDto;
 import com.example.Sprint1Equipo4.dto.response.HotelDTO;
 import com.example.Sprint1Equipo4.exception.MissingParameterException;
+
 import com.example.Sprint1Equipo4.model.Flight;
 import com.example.Sprint1Equipo4.dto.response.ResponseFlightDTO;
 import com.example.Sprint1Equipo4.service.FlightService;
@@ -57,6 +58,7 @@ public class FlightController {
             return new ResponseEntity<>(allFlights, HttpStatus.OK);
         }
     }
+
 
 
     public ResponseEntity<List<FlightDTO>> listFlights() {

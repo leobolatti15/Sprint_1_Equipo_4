@@ -19,5 +19,6 @@ import java.util.List;
         Flight upDate(FlightDTO flight);
 
         void validateDateRangeFlight(LocalDate dateFrom, LocalDate dateTo, String destination);
+
     }
 

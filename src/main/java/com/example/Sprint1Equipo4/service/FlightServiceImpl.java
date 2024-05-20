@@ -64,6 +64,24 @@ public class FlightServiceImpl implements FlightService {
                 .collect(Collectors.toList());
     }
 
+    public void validateDateRangeFlight(LocalDate dateFrom, LocalDate dateTo, String destination) {
+        if (dateFrom.isAfter(dateTo)) {
+            throw new DateOutOfRangeException();
+        }
+
+        List<Flight> flights = flightRepository.findAll();
+        boolean isInRange = flights.stream()
+                .filter(flight -> flight.getDestination().equals(destination))
+                .anyMatch(flight ->
+                        (dateFrom.isAfter(flight.getDateFrom()) || dateFrom.equals(flight.getDateFrom())) &&
+                                (dateTo.isBefore(flight.getDateTo()) || dateTo.equals(flight.getDateTo()))
+                );
+
+        if (!isInRange) {
+            throw new DateOutOfRangeException();
+        }
+    }
+
 
     private Flight getFlight(List<Flight> flights, FlightReservationDto fr) {
           return flights.stream()
