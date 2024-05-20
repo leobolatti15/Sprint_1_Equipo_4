@@ -7,9 +7,17 @@ import java.util.Optional;
 public interface HotelRepository {
    List<Hotel> findAll();
 
+
    Hotel save(Hotel hotel);
 
    boolean delete(String hotelCode);
 
    Optional<Hotel> findByHotelCode(String hotelCode);
+
+   Hotel findByCode(String hotelCode);
+
+   boolean existsByCode(String hotelCode);
+
+   Hotel update(Hotel hotel);
+
 }

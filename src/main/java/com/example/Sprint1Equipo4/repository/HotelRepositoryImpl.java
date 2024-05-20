@@ -30,6 +30,7 @@ public class HotelRepositoryImpl implements HotelRepository {
    }
 
    @Override
+
    public Hotel save(Hotel hotel) {
       hotels.add(hotel);
       return hotel;
@@ -50,6 +51,29 @@ public class HotelRepositoryImpl implements HotelRepository {
       return hotels.stream()
               .filter(hotel -> hotel.getHotelCode().equals(hotelCode))
               .findFirst();
+
+   public Hotel findByCode(String hotelCode) {
+      return hotels
+            .stream()
+            .filter(hotel -> hotel.getHotelCode().equals(hotelCode))
+            .findFirst()
+            .orElse(null);
+   }
+
+   @Override
+   public boolean existsByCode(String hotelCode) {
+      Hotel hotel = this.findByCode(hotelCode);
+      return hotel != null;
+   }
+
+   @Override
+   public Hotel update(Hotel hotel) {
+      Hotel alumnoEncontrado = findByCode(hotel.getHotelCode());
+      hotel.setHotelCode(alumnoEncontrado.getHotelCode());
+      hotels.remove(alumnoEncontrado);
+      hotels.add(hotel);
+      return hotel;
+
    }
 
    private List<Hotel> loadData() {

@@ -5,6 +5,7 @@ import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
 import com.example.Sprint1Equipo4.dto.response.HotelDTO;
 import com.example.Sprint1Equipo4.dto.response.ReservationDto;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
+import com.example.Sprint1Equipo4.exception.DateOutOfRangeException;
 import com.example.Sprint1Equipo4.exception.HotelNotFoundException;
 import com.example.Sprint1Equipo4.model.Hotel;
 import com.example.Sprint1Equipo4.repository.HotelRepository;
@@ -36,7 +37,49 @@ public class HotelServiceImpl implements HotelService {
                       a.getDateTo(),
                       a.getReserved()))
               .toList();
+
    }
+
+
+   
+
+   @Override
+   public HotelDTO searchByCode(String hotelCode) {
+      Hotel hotel = hotelRepository.findByCode(hotelCode);
+      if (!hotelRepository.existsByCode(hotelCode)) {
+         throw new HotelNotFoundException();
+      } else {
+         return new HotelDTO(
+               hotel.getHotelCode(),
+               hotel.getName(),
+               hotel.getDestination(),
+               hotel.getRoomType(),
+               hotel.getPricePerNight(),
+               hotel.getDateFrom(),
+               hotel.getDateTo(),
+               hotel.getReserved());}
+   }
+
+   @Override
+   public Boolean existsHotel(String hotelCode) {
+      return hotelRepository.existsByCode(hotelCode);
+   }
+
+   @Override
+   public HotelDTO updateHotel(HotelDTO hotelDTO) {
+      Hotel hotel = new Hotel();
+      hotel.setHotelCode(hotelDTO.getHotelCode());
+      hotel.setName(hotelDTO.getName());
+      hotel.setDestination(hotelDTO.getDestination());
+      hotel.setRoomType(hotelDTO.getRoomType());
+      hotel.setPricePerNight(hotelDTO.getPricePerNight());
+      hotel.setDateFrom(hotelDTO.getDateFrom());
+      hotel.setDateTo(hotelDTO.getDateTo());
+
+      hotelRepository.update(hotel);
+      return hotelDTO;
+   }
+
 
    @Override
    public List<HotelDTO> findAvailableHotels(LocalDate dateFrom, LocalDate dateTo, String destination) {
@@ -62,6 +105,7 @@ public class HotelServiceImpl implements HotelService {
       return availableHotelsDTO;
    }
 
+
    @Override
    public HotelDTO saveHotel(HotelDTO hotelDTO) {
       Hotel hotel = new Hotel();
@@ -81,6 +125,42 @@ public class HotelServiceImpl implements HotelService {
    public StatusDTO deleteHotel(String hotelCode) {
        hotelRepository.delete(hotelCode);
       return new StatusDTO(200, "El hotel se eliminó exitosamente");
+
+   public void validateDateRange(LocalDate dateFrom, LocalDate dateTo, String destination) {
+      if (dateFrom.isAfter(dateTo)) {
+         throw new DateOutOfRangeException();
+      }
+
+      List<Hotel> hotels = hotelRepository.findAll();
+      boolean isInRange = hotels.stream()
+              .filter(hotel -> hotel.getDestination().equals(destination))
+              .anyMatch(hotel ->
+                      (dateFrom.isAfter(hotel.getDateFrom()) || dateFrom.equals(hotel.getDateFrom())) &&
+                              (dateTo.isBefore(hotel.getDateTo()) || dateTo.equals(hotel.getDateTo()))
+              );
+
+      if (!isInRange) {
+         throw new DateOutOfRangeException();
+      }
+   }
+
+
+   //PARA CREAR UNA RESERVA EN HOTEL
+   private Hotel selectHotel(List<Hotel> availableHotels, BoockingDto bookingDto) {
+      Hotel hotelEncontrado = null;
+      for (Hotel hotel : availableHotels) {
+         if (hotel.getDestination().equalsIgnoreCase(bookingDto.getDestination()) &&
+                 isDateRangeAvailable(hotel, bookingDto.getDateFrom(), bookingDto.getDateTo())) {
+            hotelEncontrado = hotel;
+         }
+      }
+      return hotelEncontrado;
+   }
+
+   private boolean isDateRangeAvailable(Hotel hotel, LocalDate dateFrom, LocalDate dateTo) {
+      return !hotel.getReserved() && hotel.getDateFrom().equals(dateFrom) && hotel.getDateTo().equals(dateTo);
+   }
+
 
    }
 
@@ -112,6 +192,7 @@ public class HotelServiceImpl implements HotelService {
 
       return reservationDto;
    }
+
 
    @Override
    public HotelDTO findHotelByName(String hotelCode) {
@@ -154,4 +235,5 @@ public class HotelServiceImpl implements HotelService {
       }
       return totalPrice * 0.055;
    }
+
 }

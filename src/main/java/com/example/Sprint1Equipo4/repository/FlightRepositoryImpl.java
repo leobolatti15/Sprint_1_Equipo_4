@@ -17,7 +17,6 @@ import java.util.List;
 
 @Repository
 public class FlightRepositoryImpl implements FlightRepository {
-
    private List<Flight> flights;
 
    public FlightRepositoryImpl() {
@@ -27,6 +26,34 @@ public class FlightRepositoryImpl implements FlightRepository {
    @Override
    public List<Flight> findAll() {
       return flights;
+   }
+
+   @Override
+   public Flight findByName(String name) {
+      Flight flight = flights.stream().filter(a->a.getFlightNumber().equals(name)).findFirst().orElse(null);
+      return flight;
+   }
+  
+  @Override
+    public Flight save(Flight flight) {
+         flights.add(flight);
+         return flight;
+    }
+
+    @Override
+    public Flight upDate(Flight flight) {
+        Flight getFlight = findByName(flight.getFlightNumber());
+        flight.setFlightNumber(getFlight.getFlightNumber());
+        flights.remove(getFlight);
+        flights.add(flight);
+        return flight;
+    }
+
+   @Override
+   public boolean delete(String name){
+      Flight flightFound = findByName(name);
+      flights.remove(flightFound);
+      return true;
    }
 
    private List<Flight> loadData() {
@@ -53,3 +80,4 @@ public class FlightRepositoryImpl implements FlightRepository {
       return loadedData;
    }
 }
+

@@ -32,6 +32,8 @@ public class HotelController {
          return ResponseEntity.ok(allHotels);
       }
 
+      hotelService.validateDateRange(dateFrom, dateTo, destination);
+
       List<HotelDTO> availableHotels = hotelService.findAvailableHotels(dateFrom, dateTo, destination);
       return ResponseEntity.ok(availableHotels);
    }
@@ -47,11 +49,20 @@ public class HotelController {
       return new ResponseEntity<>(hotelService.deleteHotel(hotelCode), HttpStatus.OK);
    }
 
-
    @PostMapping("/booking")
    public ResponseEntity<ReservationDto> bookHotel(@RequestBody ReservationDtoRequest reservationDtoRequest) {
       ReservationDto reservationDto = hotelService.bookHotel(reservationDtoRequest);
       return ResponseEntity.status(HttpStatus.CREATED).body(reservationDto);
+   }
+
+   @GetMapping("/hotel/{hotelCode}")
+   public ResponseEntity<HotelDTO> searchByCode(@PathVariable String hotelCode) {
+      return new ResponseEntity<>(hotelService.searchByCode(hotelCode), HttpStatus.OK);
+   }
+
+   @PutMapping("/hotel/{hotelCode}")
+   public ResponseEntity<HotelDTO> updateHotel(@RequestBody HotelDTO hotelDTO, @PathVariable String hotelCode) {
+      return new ResponseEntity<>(hotelService.updateHotel(hotelDTO), HttpStatus.OK);
    }
 }
 
