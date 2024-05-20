@@ -20,4 +20,11 @@ public class Hotel {
    private LocalDate dateFrom;
    private LocalDate dateTo;
    private Boolean reserved;
+
+    public void setId(int i) {
+    }
+
+    public Object getId() {
+        return null;
+    }
 }
