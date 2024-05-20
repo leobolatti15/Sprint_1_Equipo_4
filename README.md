@@ -5,6 +5,7 @@ La colección del proyecto se encuentra en la carpeta resources
 
 ## Miembros del equipo y responsables de cada tarea
 Todos los miembros: US-0001
+
 HOTELES:
 - Francisco Alegre: US-0002 / Crud: create y delete
 - Macarena Ruffa: US-0003 / Crud: findByCode y update
