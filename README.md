@@ -25,12 +25,16 @@ Se cuenta con datos de cada uno de ellos y requerimientos mínimos:
 
 - Hoteles
 US 0001: Obtener un listado de todos los hoteles registrados
+
 US 0002: Obtener un listado de todos los hoteles disponibles en un determinado rango de fechas y según el destino seleccionado. 
+
 US 0003: Realizar una reserva de un hotel, indicando cantidad de personas, fecha de entrada, fecha de salida y tipo de habitación. Obtener como respuesta el monto total de la reserva realizada.
 
 - Vuelos
 US 0004: Obtener un listado de todos los vuelos registrados.
-US 0005: Obtener un listado de todos los vuelos disponibles en un determinado rango de fechas y según el destino y el origen seleccionados. 
+
+US 0005: Obtener un listado de todos los vuelos disponibles en un determinado rango de fechas y según el destino y el origen seleccionados.
+
 US 0006: Realizar una reserva de un vuelo, indicando cantidad de personas, origen, destino y fecha de ida. Obtener como respuesta el monto total de la reserva realizada.
 
 ## Decisiones grupales
