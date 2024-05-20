@@ -15,43 +15,69 @@ import java.io.IOException;
 import java.util.List;
 
 
+@Repository
+public class FlightRepositoryImpl implements FlightRepository {
+   private List<Flight> flights;
 
-    @Repository
-    public class FlightRepositoryImpl implements FlightRepository{
+   public FlightRepositoryImpl() {
+      this.flights = loadData();
+   }
 
-        private List<Flight> flights;
+   @Override
+   public List<Flight> findAll() {
+      return flights;
+   }
 
-        public FlightRepositoryImpl() {
-            this.flights = loadData();
-        }
-
-        @Override
-        public List<Flight> findAll() {
-            return flights;
-        }
-
-        private List<Flight> loadData() {
-            List<Flight> loadedData = null;
-            File file;
-
-            ObjectMapper objectMapper = new ObjectMapper()
-                    .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
-                    .registerModule(new JavaTimeModule());
-
-            TypeReference<List<Flight>> typeRef = new TypeReference<>() {
-            };
-
-            try {
-                file = ResourceUtils.getFile("classpath:vuelo.json");
-                loadedData = objectMapper.readValue(file, typeRef);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                System.out.println("Failed while initializing DB, check your resources files");
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.out.println("Failed while initializing DB, check your JSON formatting.");
-            }
-            return loadedData;
-        }
+   @Override
+   public Flight findByName(String name) {
+      Flight flight = flights.stream().filter(a->a.getFlightNumber().equals(name)).findFirst().orElse(null);
+      return flight;
+   }
+  
+  @Override
+    public Flight save(Flight flight) {
+         flights.add(flight);
+         return flight;
     }
+
+    @Override
+    public Flight upDate(Flight flight) {
+        Flight getFlight = findByName(flight.getFlightNumber());
+        flight.setFlightNumber(getFlight.getFlightNumber());
+        flights.remove(getFlight);
+        flights.add(flight);
+        return flight;
+    }
+
+   @Override
+   public boolean delete(String name){
+      Flight flightFound = findByName(name);
+      flights.remove(flightFound);
+      return true;
+   }
+
+   private List<Flight> loadData() {
+      List<Flight> loadedData = null;
+      File file;
+
+      ObjectMapper objectMapper = new ObjectMapper()
+            .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
+            .registerModule(new JavaTimeModule());
+
+      TypeReference<List<Flight>> typeRef = new TypeReference<>() {
+      };
+
+      try {
+         file = ResourceUtils.getFile("classpath:vuelo.json");
+         loadedData = objectMapper.readValue(file, typeRef);
+      } catch (FileNotFoundException e) {
+         e.printStackTrace();
+         System.out.println("Failed while initializing DB, check your resources files");
+      } catch (IOException e) {
+         e.printStackTrace();
+         System.out.println("Failed while initializing DB, check your JSON formatting.");
+      }
+      return loadedData;
+   }
+}
 
