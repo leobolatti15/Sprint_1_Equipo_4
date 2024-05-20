@@ -40,9 +40,6 @@ public class HotelServiceImpl implements HotelService {
 
    }
 
-
-   
-
    @Override
    public HotelDTO searchByCode(String hotelCode) {
       Hotel hotel = hotelRepository.findByCode(hotelCode);
@@ -123,8 +120,9 @@ public class HotelServiceImpl implements HotelService {
 
    @Override
    public StatusDTO deleteHotel(String hotelCode) {
-       hotelRepository.delete(hotelCode);
+      hotelRepository.delete(hotelCode);
       return new StatusDTO(200, "El hotel se eliminó exitosamente");
+   }
 
    public void validateDateRange(LocalDate dateFrom, LocalDate dateTo, String destination) {
       if (dateFrom.isAfter(dateTo)) {
@@ -159,9 +157,6 @@ public class HotelServiceImpl implements HotelService {
 
    private boolean isDateRangeAvailable(Hotel hotel, LocalDate dateFrom, LocalDate dateTo) {
       return !hotel.getReserved() && hotel.getDateFrom().equals(dateFrom) && hotel.getDateTo().equals(dateTo);
-   }
-
-
    }
 
 
@@ -209,20 +204,6 @@ public class HotelServiceImpl implements HotelService {
       );
    }
 
-   private Hotel selectHotel(List<Hotel> availableHotels, BoockingDto bookingDto) {
-      Hotel hotelEncontrado = null;
-      for (Hotel hotel : availableHotels) {
-         if (hotel.getDestination().equalsIgnoreCase(bookingDto.getDestination()) &&
-                 isDateRangeAvailable(hotel, bookingDto.getDateFrom(), bookingDto.getDateTo())) {
-            hotelEncontrado = hotel;
-         }
-      }
-      return hotelEncontrado;
-   }
-
-   private boolean isDateRangeAvailable(Hotel hotel, LocalDate dateFrom, LocalDate dateTo) {
-      return !hotel.getReserved() && hotel.getDateFrom().equals(dateFrom) && hotel.getDateTo().equals(dateTo);
-   }
 
    private double calculateTotalPrice(Hotel hotel, LocalDate dateFrom, LocalDate dateTo) {
       long nights = dateFrom.until(dateTo).getDays();

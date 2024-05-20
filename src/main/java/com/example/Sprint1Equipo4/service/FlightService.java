@@ -15,8 +15,6 @@ import java.util.List;
         FlightResDto reserve(FlightReqDto flight);
         FlightDTO findByFlightName(String name);
         ResponseFlightDTO deleteFlight(String name);
-        List<FlightDTO> flightsAvailable(LocalDate dateFrom, LocalDate dateTo, String origin, String destination);
-        FlightResDto reserve(FlightReqDto flight);
         Flight create(FlightDTO flight);
         Flight upDate(FlightDTO flight);
     }

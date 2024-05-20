@@ -51,7 +51,7 @@ public class HotelRepositoryImpl implements HotelRepository {
       return hotels.stream()
               .filter(hotel -> hotel.getHotelCode().equals(hotelCode))
               .findFirst();
-
+   }
    public Hotel findByCode(String hotelCode) {
       return hotels
             .stream()
