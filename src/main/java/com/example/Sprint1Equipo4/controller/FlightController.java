@@ -26,7 +26,6 @@ public class FlightController {
     @Autowired
     private FlightService flightService;
 
-
     @GetMapping("/flight")
     public ResponseEntity<List<FlightDTO>> listFlight(
             @DateTimeFormat(pattern = "dd/MM/yyyy") @RequestParam(required = false) LocalDate date_from,
@@ -34,8 +33,7 @@ public class FlightController {
             @RequestParam(required = false) String origin,
             @RequestParam(required = false) String destination) {
 
-
-        boolean paramsPresent = (date_from != null || date_to != null || origin != null || destination != null);
+       boolean paramsPresent = (date_from != null || date_to != null || origin != null || destination != null);
 
         if (paramsPresent) {
             if (date_from == null || date_to == null || origin == null || destination == null) {
@@ -57,12 +55,6 @@ public class FlightController {
             }
             return new ResponseEntity<>(allFlights, HttpStatus.OK);
         }
-    }
-
-
-
-    public ResponseEntity<List<FlightDTO>> listFlights() {
-        return new ResponseEntity<>(flightService.listFlights(), HttpStatus.OK);
     }
 
     @GetMapping("/flight/{name}")

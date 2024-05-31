@@ -29,16 +29,10 @@ public class HotelController {
            @RequestParam(value="date_from", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateFrom,
            @RequestParam(value="date_to", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateTo,
            @RequestParam(value="destination", required = false) String destination) {
-
-
       if (dateFrom == null & dateTo == null & destination == null) {
          List<HotelDTO> allHotels = hotelService.listHotels();
-
          return new ResponseEntity<>(allHotels, HttpStatus.OK);
-
-
       }
-
         if (dateFrom == null || dateTo == null || destination == null) {
            throw new MissingParameterException();
         }

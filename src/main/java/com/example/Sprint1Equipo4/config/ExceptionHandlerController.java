@@ -1,16 +1,21 @@
 package com.example.Sprint1Equipo4.config;
 
 import com.example.Sprint1Equipo4.dto.ErrorDto;
+import com.example.Sprint1Equipo4.dto.response.ErrorDTO;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.exception.DateOutOfRangeException;
 import com.example.Sprint1Equipo4.exception.FlightNotFoundException;
-import com.example.Sprint1Equipo4.exception.FlightNotFoundException;
 import com.example.Sprint1Equipo4.exception.HotelNotFoundException;
 import com.example.Sprint1Equipo4.exception.MissingParameterException;
+import jakarta.validation.ConstraintViolationException;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import jakarta.validation.ConstraintViolation;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class ExceptionHandlerController {
@@ -22,7 +27,7 @@ public class ExceptionHandlerController {
 
    @ExceptionHandler(FlightNotFoundException.class)
    public ResponseEntity<StatusDTO> flightNotFound(FlightNotFoundException ex){
-      StatusDTO status = new StatusDTO(404, "no se encontraron vuelos disponibles");
+      StatusDTO status = new StatusDTO(404, "No se encontraron vuelos disponibles");
       return new ResponseEntity<>(status,HttpStatus.NOT_FOUND);
    }
 
@@ -38,4 +43,25 @@ public class ExceptionHandlerController {
       return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
    }
 
+   @ExceptionHandler(MethodArgumentNotValidException.class)
+   public ResponseEntity<ErrorDTO> validationException(MethodArgumentNotValidException e){
+      return ResponseEntity.badRequest().body(
+            new ErrorDTO("Se encontraron los siguientes errores en las validaciones: @Valid del DTO",
+                  e.getAllErrors().stream()
+                        .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                        .collect(Collectors.toList())
+            )
+      );
+   }
+
+   @ExceptionHandler(ConstraintViolationException.class)
+   public ResponseEntity<ErrorDTO> validationException(ConstraintViolationException e){
+      return ResponseEntity.badRequest().body(
+            new ErrorDTO("Se encontraron los siguientes errores en las validaciones en el PathVariable y RequestParam ",
+                  e.getConstraintViolations().stream()
+                        .map(ConstraintViolation::getMessage)
+                        .collect(Collectors.toList())
+            )
+      );
+   }
 }
