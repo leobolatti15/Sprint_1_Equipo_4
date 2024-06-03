@@ -88,9 +88,9 @@ public class HotelServiceImpl implements HotelService {
    public List<HotelDTO> findAvailableHotels(LocalDate dateFrom, LocalDate dateTo, String destination) {
       List<Hotel> allHotels = hotelRepository.findAll();
       List<Hotel> availableHotels = allHotels.stream()
-            .filter(hotel -> hotel.getDestination().equals(destination))
             .filter(hotel -> !hotel.getReserved())
             .filter(hotel -> dateFrom.isBefore(hotel.getDateTo()) && dateTo.isAfter(hotel.getDateFrom()))
+            .filter(hotel -> hotel.getDestination().equals(destination))
             .toList();
 
       List<HotelDTO> availableHotelsDTO = new ArrayList<>();
@@ -107,6 +107,10 @@ public class HotelServiceImpl implements HotelService {
    }
 
    public void validateDateRange(LocalDate dateFrom, LocalDate dateTo, String destination) {
+      if (dateFrom.isAfter(dateTo)) {
+         throw new DateOutOfRangeException();
+      }
+
       List<Hotel> hotels = hotelRepository.findAll();
       boolean isInRange = hotels.stream()
             .filter(hotel -> hotel.getDestination().equals(destination))
@@ -180,3 +184,4 @@ public class HotelServiceImpl implements HotelService {
          return totalPrice * 1.15;
    }
 }
+
