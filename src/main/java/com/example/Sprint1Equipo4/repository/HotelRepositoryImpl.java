@@ -49,9 +49,10 @@ public class HotelRepositoryImpl implements HotelRepository {
    @Override
    public Optional<Hotel> findByHotelCode(String hotelCode) {
       return hotels.stream()
-              .filter(hotel -> hotel.getHotelCode().equals(hotelCode))
-              .findFirst();
+            .filter(hotel -> hotel.getHotelCode().equals(hotelCode))
+            .findFirst();
    }
+
    public Hotel findByCode(String hotelCode) {
       return hotels
             .stream()
@@ -81,11 +82,12 @@ public class HotelRepositoryImpl implements HotelRepository {
       File file;
 
       ObjectMapper objectMapper = new ObjectMapper()
-              .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
-              .registerModule(new ParameterNamesModule())
-              .registerModule(new JavaTimeModule());
+            .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+            .registerModule(new ParameterNamesModule())
+            .registerModule(new JavaTimeModule());
 
-      TypeReference<List<Hotel>> typeRef = new TypeReference<>() {};
+      TypeReference<List<Hotel>> typeRef = new TypeReference<>() {
+      };
 
       try {
          file = ResourceUtils.getFile("classpath:hotel.json");

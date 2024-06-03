@@ -30,27 +30,27 @@ public class FlightRepositoryImpl implements FlightRepository {
 
    @Override
    public Flight findByName(String name) {
-      Flight flight = flights.stream().filter(a->a.getFlightNumber().equals(name)).findFirst().orElse(null);
+      Flight flight = flights.stream().filter(a -> a.getFlightNumber().equals(name)).findFirst().orElse(null);
       return flight;
    }
-  
-  @Override
-    public Flight save(Flight flight) {
-         flights.add(flight);
-         return flight;
-    }
-
-    @Override
-    public Flight upDate(Flight flight) {
-        Flight getFlight = findByName(flight.getFlightNumber());
-        flight.setFlightNumber(getFlight.getFlightNumber());
-        flights.remove(getFlight);
-        flights.add(flight);
-        return flight;
-    }
 
    @Override
-   public boolean delete(String name){
+   public Flight save(Flight flight) {
+      for (Flight f : flights) {
+         if (f.getFlightNumber().equals(flight.getFlightNumber())) {
+            Flight getFlight = findByName(flight.getFlightNumber());
+            flight.setFlightNumber(getFlight.getFlightNumber());
+            flights.remove(getFlight);
+            flights.add(flight);
+            return flight;
+         }
+      }
+      flights.add(flight);
+      return flight;
+   }
+
+   @Override
+   public boolean delete(String name) {
       Flight flightFound = findByName(name);
       flights.remove(flightFound);
       return true;

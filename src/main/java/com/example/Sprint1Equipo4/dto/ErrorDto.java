@@ -12,3 +12,11 @@ public class ErrorDto {
    private int status;
 
 }
+
+//public class ErrorDTO {
+//
+//   private String description;
+//   @JsonProperty("messages_list")
+//   private List<String> messagesList;
+//
+//}

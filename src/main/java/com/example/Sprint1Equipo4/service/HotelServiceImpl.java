@@ -9,6 +9,7 @@ import com.example.Sprint1Equipo4.exception.DateOutOfRangeException;
 import com.example.Sprint1Equipo4.exception.HotelNotFoundException;
 import com.example.Sprint1Equipo4.model.Hotel;
 import com.example.Sprint1Equipo4.repository.HotelRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,21 +24,19 @@ public class HotelServiceImpl implements HotelService {
    @Autowired
    HotelRepository hotelRepository;
 
+   @Autowired
+   private final ModelMapper modelMapper;
+
+   public HotelServiceImpl(ModelMapper modelMapper) {
+      this.modelMapper = modelMapper;
+   }
+
    @Override
    public List<HotelDTO> listHotels() {
       List<Hotel> listHotel = hotelRepository.findAll();
       return listHotel.stream()
-              .map(a -> new HotelDTO(
-                      a.getHotelCode(),
-                      a.getName(),
-                      a.getDestination(),
-                      a.getRoomType(),
-                      a.getPricePerNight(),
-                      a.getDateFrom(),
-                      a.getDateTo(),
-                      a.getReserved()))
-              .toList();
-
+            .map(hotel -> modelMapper.map(hotel, HotelDTO.class))
+            .collect(Collectors.toList());
    }
 
    @Override
@@ -46,62 +45,14 @@ public class HotelServiceImpl implements HotelService {
       if (!hotelRepository.existsByCode(hotelCode)) {
          throw new HotelNotFoundException();
       } else {
-         return new HotelDTO(
-               hotel.getHotelCode(),
-               hotel.getName(),
-               hotel.getDestination(),
-               hotel.getRoomType(),
-               hotel.getPricePerNight(),
-               hotel.getDateFrom(),
-               hotel.getDateTo(),
-               hotel.getReserved());}
+         return modelMapper.map(hotel, HotelDTO.class);
+      }
    }
 
    @Override
    public Boolean existsHotel(String hotelCode) {
       return hotelRepository.existsByCode(hotelCode);
    }
-
-   @Override
-   public HotelDTO updateHotel(HotelDTO hotelDTO) {
-      Hotel hotel = new Hotel();
-      hotel.setHotelCode(hotelDTO.getHotelCode());
-      hotel.setName(hotelDTO.getName());
-      hotel.setDestination(hotelDTO.getDestination());
-      hotel.setRoomType(hotelDTO.getRoomType());
-      hotel.setPricePerNight(hotelDTO.getPricePerNight());
-      hotel.setDateFrom(hotelDTO.getDateFrom());
-      hotel.setDateTo(hotelDTO.getDateTo());
-
-      hotelRepository.update(hotel);
-      return hotelDTO;
-   }
-
-
-   @Override
-   public List<HotelDTO> findAvailableHotels(LocalDate dateFrom, LocalDate dateTo, String destination) {
-      List<Hotel> allHotels = hotelRepository.findAll();
-      List<Hotel> availableHotels = allHotels.stream()
-              .filter(hotel -> hotel.getDestination().equals(destination))
-              .filter(hotel -> !hotel.getReserved())
-              .filter(hotel -> dateFrom.isBefore(hotel.getDateTo()) && dateTo.isAfter(hotel.getDateFrom()))
-              .toList();
-
-      List<HotelDTO> availableHotelsDTO = new ArrayList<>();
-      for (Hotel hotel : availableHotels) {
-         availableHotelsDTO.add(new HotelDTO(hotel.getHotelCode(),
-                 hotel.getName(),
-                 hotel.getDestination(),
-                 hotel.getRoomType(),
-                 hotel.getPricePerNight(),
-                 hotel.getDateFrom(),
-                 hotel.getDateTo(),
-                 hotel.getReserved()));
-      }
-
-      return availableHotelsDTO;
-   }
-
 
    @Override
    public HotelDTO saveHotel(HotelDTO hotelDTO) {
@@ -119,6 +70,37 @@ public class HotelServiceImpl implements HotelService {
    }
 
    @Override
+   public HotelDTO updateHotel(HotelDTO hotelDTO) {
+      Hotel hotel = new Hotel();
+      hotel.setHotelCode(hotelDTO.getHotelCode());
+      hotel.setName(hotelDTO.getName());
+      hotel.setDestination(hotelDTO.getDestination());
+      hotel.setRoomType(hotelDTO.getRoomType());
+      hotel.setPricePerNight(hotelDTO.getPricePerNight());
+      hotel.setDateFrom(hotelDTO.getDateFrom());
+      hotel.setDateTo(hotelDTO.getDateTo());
+
+      hotelRepository.update(hotel);
+      return hotelDTO;
+   }
+
+   @Override
+   public List<HotelDTO> findAvailableHotels(LocalDate dateFrom, LocalDate dateTo, String destination) {
+      List<Hotel> allHotels = hotelRepository.findAll();
+      List<Hotel> availableHotels = allHotels.stream()
+            .filter(hotel -> !hotel.getReserved())
+            .filter(hotel -> dateFrom.isBefore(hotel.getDateTo()) && dateTo.isAfter(hotel.getDateFrom()))
+            .filter(hotel -> hotel.getDestination().equals(destination))
+            .toList();
+
+      List<HotelDTO> availableHotelsDTO = new ArrayList<>();
+      for (Hotel hotel : availableHotels) {
+         availableHotelsDTO.add(modelMapper.map(hotel, HotelDTO.class));
+      }
+      return availableHotelsDTO;
+   }
+
+   @Override
    public StatusDTO deleteHotel(String hotelCode) {
       hotelRepository.delete(hotelCode);
       return new StatusDTO(200, "El hotel se eliminó exitosamente");
@@ -131,24 +113,23 @@ public class HotelServiceImpl implements HotelService {
 
       List<Hotel> hotels = hotelRepository.findAll();
       boolean isInRange = hotels.stream()
-              .filter(hotel -> hotel.getDestination().equals(destination))
-              .anyMatch(hotel ->
-                      (dateFrom.isAfter(hotel.getDateFrom()) || dateFrom.equals(hotel.getDateFrom())) &&
-                              (dateTo.isBefore(hotel.getDateTo()) || dateTo.equals(hotel.getDateTo()))
-              );
+            .filter(hotel -> hotel.getDestination().equals(destination))
+            .anyMatch(hotel ->
+                  (dateFrom.isAfter(hotel.getDateFrom()) || dateFrom.equals(hotel.getDateFrom())) &&
+                        (dateTo.isBefore(hotel.getDateTo()) || dateTo.equals(hotel.getDateTo()))
+            );
 
       if (!isInRange) {
          throw new DateOutOfRangeException();
       }
    }
 
-
    //PARA CREAR UNA RESERVA EN HOTEL
    private Hotel selectHotel(List<Hotel> availableHotels, BoockingDto bookingDto) {
       Hotel hotelEncontrado = null;
       for (Hotel hotel : availableHotels) {
          if (hotel.getDestination().equalsIgnoreCase(bookingDto.getDestination()) &&
-                 isDateRangeAvailable(hotel, bookingDto.getDateFrom(), bookingDto.getDateTo())) {
+               isDateRangeAvailable(hotel, bookingDto.getDateFrom(), bookingDto.getDateTo())) {
             hotelEncontrado = hotel;
          }
       }
@@ -159,13 +140,12 @@ public class HotelServiceImpl implements HotelService {
       return !hotel.getReserved() && hotel.getDateFrom().equals(dateFrom) && hotel.getDateTo().equals(dateTo);
    }
 
-
    @Override
    public ReservationDto bookHotel(ReservationDtoRequest reservationDtoRequest) {
       List<Hotel> allHotels = hotelRepository.findAll();
       List<Hotel> availableHotels = allHotels.stream()
-              .filter(hotel -> !hotel.getReserved())
-              .collect(Collectors.toList());
+            .filter(hotel -> !hotel.getReserved())
+            .collect(Collectors.toList());
 
       Hotel selectedHotel = selectHotel(availableHotels, reservationDtoRequest.getBooking());
 
@@ -188,33 +168,20 @@ public class HotelServiceImpl implements HotelService {
       return reservationDto;
    }
 
-
-   @Override
-   public HotelDTO findHotelByName(String hotelCode) {
-      Hotel hotel = hotelRepository.findByHotelCode(hotelCode).orElseThrow(HotelNotFoundException::new);
-      return new HotelDTO(
-              hotel.getHotelCode(),
-              hotel.getName(),
-              hotel.getDestination(),
-              hotel.getRoomType(),
-              hotel.getPricePerNight(),
-              hotel.getDateFrom(),
-              hotel.getDateTo(),
-              hotel.getReserved()
-      );
-   }
-
-
    private double calculateTotalPrice(Hotel hotel, LocalDate dateFrom, LocalDate dateTo) {
       long nights = dateFrom.until(dateTo).getDays();
       return hotel.getPricePerNight() * nights;
    }
 
    private double calculateInterest(double totalPrice, int dues) {
-      if (dues == 0) {
-         return 0;
-      }
-      return totalPrice * 0.055;
+      if (dues == 1) {
+         return totalPrice * 1;
+      } else if (dues > 1 && dues <= 3) {
+         return totalPrice * 1.05;
+      } else if (dues > 3 && dues <= 6) {
+         return totalPrice * 1.1;
+      } else
+         return totalPrice * 1.15;
    }
-
 }
+

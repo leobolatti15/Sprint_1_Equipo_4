@@ -9,16 +9,21 @@ import com.example.Sprint1Equipo4.dto.response.ResponseFlightDTO;
 import java.time.LocalDate;
 import java.util.List;
 
-    public interface FlightService {
-        List<FlightDTO> listFlights();
-        List<FlightDTO> flightsAvailable(LocalDate dateFrom, LocalDate dateTo, String origin, String destination);
-        FlightResDto reserve(FlightReqDto flight);
-        FlightDTO findByFlightName(String name);
-        ResponseFlightDTO deleteFlight(String name);
-        Flight create(FlightDTO flight);
-        Flight upDate(FlightDTO flight);
+public interface FlightService {
+   List<FlightDTO> listFlights();
 
-        void validateDateRangeFlight(LocalDate dateFrom, LocalDate dateTo, String destination);
+   List<FlightDTO> flightsAvailable(LocalDate dateFrom, LocalDate dateTo, String origin, String destination);
 
-    }
+   FlightResDto reserve(FlightReqDto flight);
+
+   FlightDTO findByFlightName(String name);
+
+   ResponseFlightDTO deleteFlight(String name);
+
+   Flight create(FlightDTO flight);
+
+   Flight upDate(FlightDTO flight);
+
+   void validateDateRangeFlight(LocalDate dateFrom, LocalDate dateTo, String destination);
+}
 
