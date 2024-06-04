@@ -40,9 +40,21 @@ public class ExceptionHandlerController {
       return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
    }
 
-   @ExceptionHandler(InvalidDuesException.class)
-   public ResponseEntity<ErrorDto> InvalidDuesException(InvalidDuesException ex) {
+   @ExceptionHandler(InvalidBoockingException.class)
+   public ResponseEntity<ErrorDto> InvalidBoockingException(InvalidBoockingException ex) {
+      ErrorDto error = new ErrorDto("El tipo de habitación seleccionada no coincide con la cantidad de personas que se alojarán en ella.", 400);
+      return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+   }
+
+   @ExceptionHandler(InvalidDuesForDebit.class)
+   public ResponseEntity<ErrorDto> InvalidDuesForDebit(InvalidDuesForDebit ex) {
       ErrorDto error = new ErrorDto("Tarjeta de débito: Se ha ingresado una cantidad de cuotas diferente a 1", 400);
+      return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+   }
+
+   @ExceptionHandler(InvalidDuesForCredit.class)
+   public ResponseEntity<ErrorDto> InvalidDuesForCredit(InvalidDuesForCredit ex) {
+      ErrorDto error = new ErrorDto("Tarjeta de crédito: debe seleccionar dos o más cuotas", 400);
       return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
    }
 
