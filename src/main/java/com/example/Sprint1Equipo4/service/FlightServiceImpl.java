@@ -8,6 +8,8 @@ import com.example.Sprint1Equipo4.dto.response.ResponseFlightDTO;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.exception.DateOutOfRangeException;
 import com.example.Sprint1Equipo4.exception.FlightNotFoundException;
+import com.example.Sprint1Equipo4.exception.InvalidDuesForCredit;
+import com.example.Sprint1Equipo4.exception.InvalidDuesForDebit;
 import com.example.Sprint1Equipo4.model.Flight;
 import com.example.Sprint1Equipo4.repository.FlightRepository;
 import org.modelmapper.ModelMapper;
@@ -87,15 +89,31 @@ public class FlightServiceImpl implements FlightService {
       return fr.getPeople().isEmpty() ? 0 : price * fr.getPeople().size();
    }
 
-   private double calculateInterest(double totalPrice, int dues) {
-      if (dues == 1) {
-         return totalPrice * 1;
-      } else if (dues > 1 && dues <= 3) {
+   private double calculateInterest(double totalPrice, int dues, String type) {
+      switch (type) {
+         case "DEBIT":
+            if (dues == 1) {
+               return totalPrice;
+            } else if(dues > 1){
+               throw new InvalidDuesForDebit();
+            }
+         case "CREDIT":
+            return calculateCreditInterest(totalPrice, dues);
+         default:
+            throw new IllegalArgumentException("Invalid payment type");
+      }
+   }
+
+   private double calculateCreditInterest(double totalPrice, int dues) {
+      if (dues >= 1 && dues <= 3) {
          return totalPrice * 1.05;
       } else if (dues > 3 && dues <= 6) {
          return totalPrice * 1.1;
-      } else
+      } else if (dues > 6 && dues <= 12) {
          return totalPrice * 1.15;
+      } else {
+         throw new InvalidDuesForCredit();
+      }
    }
 
    @Override
@@ -106,7 +124,7 @@ public class FlightServiceImpl implements FlightService {
 
       int amount = getTotalPrice(flight, fDto.getFlightReservationDto());
       double interest = calculateInterest(amount, fDto.getFlightReservationDto()
-            .getPaymentMethodsDto().getDues());
+            .getPaymentMethodsDto().getDues(), fDto.getFlightReservationDto().getPaymentMethodsDto().getType());
       double total = amount + interest;
 
       FlightResDto resDto = new FlightResDto();

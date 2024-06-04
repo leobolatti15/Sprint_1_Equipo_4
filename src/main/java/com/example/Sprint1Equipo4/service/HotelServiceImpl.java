@@ -5,8 +5,7 @@ import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
 import com.example.Sprint1Equipo4.dto.response.HotelDTO;
 import com.example.Sprint1Equipo4.dto.response.ReservationDto;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
-import com.example.Sprint1Equipo4.exception.DateOutOfRangeException;
-import com.example.Sprint1Equipo4.exception.HotelNotFoundException;
+import com.example.Sprint1Equipo4.exception.*;
 import com.example.Sprint1Equipo4.model.Hotel;
 import com.example.Sprint1Equipo4.repository.HotelRepository;
 import org.modelmapper.ModelMapper;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -142,6 +142,9 @@ public class HotelServiceImpl implements HotelService {
 
    @Override
    public ReservationDto bookHotel(ReservationDtoRequest reservationDtoRequest) {
+      BoockingDto bookingDto = reservationDtoRequest.getBooking();
+      numOfPeople(bookingDto);
+
       List<Hotel> allHotels = hotelRepository.findAll();
       List<Hotel> availableHotels = allHotels.stream()
             .filter(hotel -> !hotel.getReserved())
@@ -154,7 +157,7 @@ public class HotelServiceImpl implements HotelService {
       }
 
       double totalPrice = calculateTotalPrice(selectedHotel, reservationDtoRequest.getBooking().getDateFrom(), reservationDtoRequest.getBooking().getDateTo());
-      double interest = calculateInterest(totalPrice, reservationDtoRequest.getBooking().getPayment().getDues());
+      double interest = calculateInterest(totalPrice, reservationDtoRequest.getBooking().getPayment().getDues(), reservationDtoRequest.getBooking().getPayment().getType());
       double total = totalPrice + interest;
 
       ReservationDto reservationDto = new ReservationDto();
@@ -173,15 +176,46 @@ public class HotelServiceImpl implements HotelService {
       return hotel.getPricePerNight() * nights;
    }
 
-   private double calculateInterest(double totalPrice, int dues) {
-      if (dues == 1) {
-         return totalPrice * 1;
-      } else if (dues > 1 && dues <= 3) {
+   private double calculateInterest(double totalPrice, int dues, String type) {
+      switch (type) {
+         case "DEBIT":
+            if (dues == 1) {
+               return totalPrice;
+            } else if(dues > 1){
+               throw new InvalidDuesForDebit();
+            }
+         case "CREDIT":
+            return calculateCreditInterest(totalPrice, dues);
+         default:
+            throw new IllegalArgumentException("Invalid payment type");
+      }
+   }
+
+   private double calculateCreditInterest(double totalPrice, int dues) {
+      if (dues >= 1 && dues <= 3) {
          return totalPrice * 1.05;
       } else if (dues > 3 && dues <= 6) {
          return totalPrice * 1.1;
-      } else
+      } else if (dues > 6 && dues <= 12) {
          return totalPrice * 1.15;
+      } else {
+         throw new InvalidDuesForCredit();
+      }
+   }
+
+   @Override
+   public Optional<?> numOfPeople(BoockingDto bookingDto) {
+      // Validate people size and room type combination
+      if (bookingDto.getPeopleAmount() == 1 && bookingDto.getRoomType().equals("SINGLE")) {
+         return Optional.of(bookingDto.getPeople().size());
+      } else if (bookingDto.getPeopleAmount() == 2 && bookingDto.getRoomType().equals("DOUBLE")) {
+         return Optional.of(bookingDto.getPeople().size());
+      } else if (bookingDto.getPeopleAmount() == 3 && bookingDto.getRoomType().equals("TRIPLE")) {
+         return Optional.of(bookingDto.getPeopleAmount());
+      } else {
+         // Throw a more specific exception indicating the mismatch
+         throw new InvalidBoockingException();
+      }
    }
 }
 
