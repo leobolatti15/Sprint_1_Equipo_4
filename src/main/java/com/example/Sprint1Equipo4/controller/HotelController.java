@@ -4,19 +4,21 @@ import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
 import com.example.Sprint1Equipo4.dto.response.HotelDTO;
 import com.example.Sprint1Equipo4.dto.response.ReservationDto;
 import com.example.Sprint1Equipo4.exception.MissingParameterException;
-
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
-
 import com.example.Sprint1Equipo4.service.HotelService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.FutureOrPresent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/api/v1")
 public class HotelController {
@@ -26,10 +28,10 @@ public class HotelController {
 
    @GetMapping("/hotels")
    public ResponseEntity<List<HotelDTO>> listHotels(
-           @RequestParam(value="date_from", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateFrom,
-           @RequestParam(value="date_to", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateTo,
+           @RequestParam(value="date_from", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") @FutureOrPresent LocalDate dateFrom,
+           @RequestParam(value="date_to", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") @FutureOrPresent LocalDate dateTo,
            @RequestParam(value="destination", required = false) String destination) {
-      if (dateFrom == null & dateTo == null & destination == null) {
+      if (dateFrom == null && dateTo == null && destination == null) {
          List<HotelDTO> allHotels = hotelService.listHotels();
          return new ResponseEntity<>(allHotels, HttpStatus.OK);
       }
@@ -55,7 +57,7 @@ public class HotelController {
    }
 
    @PostMapping("/booking")
-   public ResponseEntity<ReservationDto> bookHotel(@RequestBody ReservationDtoRequest reservationDtoRequest) {
+   public ResponseEntity<ReservationDto> bookHotel(@RequestBody @Valid ReservationDtoRequest reservationDtoRequest) {
       ReservationDto reservationDto = hotelService.bookHotel(reservationDtoRequest);
       return ResponseEntity.status(HttpStatus.CREATED).body(reservationDto);
    }

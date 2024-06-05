@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,7 @@ public class FlightReservationDto {
     private String destination;
     @JsonProperty("flight_number")
     private String flightNumber;
+    @Min(value = 1, message = "La cantidad de personas debe ser un valor numérico.")
     private Integer seats;
     @JsonProperty("seat_type")
     private String seatType;

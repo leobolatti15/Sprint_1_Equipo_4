@@ -7,19 +7,17 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class BoockingDto {
-
 
     @JsonProperty("date_from")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -34,6 +32,7 @@ public class BoockingDto {
     private String destination;
     @JsonProperty("hotel_code")
     private String hotelCode;
+    @Min(value = 1, message = "La cantidad de personas debe ser un valor numérico.")
     @JsonProperty("people_amount")
     private Integer peopleAmount;
     @JsonProperty("room_type")
