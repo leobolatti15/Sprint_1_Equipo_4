@@ -22,13 +22,14 @@ import java.util.stream.Collectors;
 public class HotelServiceImpl implements HotelService {
 
    @Autowired
-   HotelRepository hotelRepository;
+   private HotelRepository hotelRepository;
 
    @Autowired
    private final ModelMapper modelMapper;
 
-   public HotelServiceImpl(ModelMapper modelMapper) {
+   public HotelServiceImpl(HotelRepository hotelRepository,ModelMapper modelMapper) {
       this.modelMapper = modelMapper;
+      this.hotelRepository = hotelRepository;
    }
 
    @Override
