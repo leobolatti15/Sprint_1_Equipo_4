@@ -4,12 +4,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
+import com.example.Sprint1Equipo4.dto.PeopleDto;
+import com.example.Sprint1Equipo4.dto.request.BoockingDto;
+import com.example.Sprint1Equipo4.dto.request.PaymentMethodsDto;
 import com.example.Sprint1Equipo4.dto.response.HotelDTO;
+import com.example.Sprint1Equipo4.dto.response.ReservationDto;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.exception.HotelNotFoundException;
 import com.example.Sprint1Equipo4.model.Hotel;
 import com.example.Sprint1Equipo4.repository.HotelRepository;
 import com.example.Sprint1Equipo4.service.HotelServiceImpl;
+import jakarta.validation.constraints.Max;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +27,7 @@ import org.modelmapper.ModelMapper;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class HotelServiceImplTest {
@@ -44,6 +50,12 @@ public class HotelServiceImplTest {
             LocalDate.of(2025, 2, 10), LocalDate.of(2025, 3, 20), false);
     private static final HotelDTO hotelDTO2 = new HotelDTO("CH-0003", "Cataratas Hotel 2", "Puerto Iguazu", "Triple", 8200,
             LocalDate.of(2025, 2, 10), LocalDate.of(2025, 3, 23), false);
+
+    private static final PeopleDto people1 = new PeopleDto("12345678","pepe","peras","1990-05-25","pepe@peras.com");
+    private static final PeopleDto people2 = new PeopleDto("12345678","pepa","peras","1990-07-09","pepa@peras.com");
+    private static final PaymentMethodsDto pay1 = new PaymentMethodsDto("CREDIT","1234-5678-9123-4567",3);
+    private static final BoockingDto book = new BoockingDto(LocalDate.of(2025, 02, 10),LocalDate.of(2025, 03, 20),"Puerto Iguazu","CH-0002",2,"DOUBLE",List.of(people1,people2),pay1);
+    private static final ReservationDtoRequest req = new ReservationDtoRequest("pepe@peras.com",book);
 
     @Test
     public void testListHotels() {
@@ -204,14 +216,17 @@ public class HotelServiceImplTest {
     }
 
     @Test
-    void validateDateRange() {
-    }
-
-    @Test
     void bookHotel() {
-    }
 
-    @Test
-    void numOfPeople() {
+        List<Hotel> allHotel = List.of(hotel1,hotel2);
+        // Act
+
+        Mockito.when(hotelRepository.findAll()).thenReturn(allHotel);
+        ReservationDto result = hotelService.bookHotel(req);
+
+        // Assert
+        assertEquals("La reserva se realizó satisfactoriamente", result.getStatus().getMessage(),
+                "El mensaje de estado debería ser 'La reserva se realizó satisfactoriamente'");
+
     }
 }
