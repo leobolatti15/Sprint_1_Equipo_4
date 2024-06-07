@@ -29,8 +29,9 @@ public class FlightServiceImpl implements FlightService {
    @Autowired
    private final ModelMapper modelMapper;
 
-   public FlightServiceImpl(ModelMapper modelMapper) {
+   public FlightServiceImpl(ModelMapper modelMapper,FlightRepository flightRepository) {
       this.modelMapper = modelMapper;
+      this.flightRepository = flightRepository;
    }
 
    @Override
@@ -74,7 +75,7 @@ public class FlightServiceImpl implements FlightService {
       }
    }
 
-   private Flight getFlight(List<Flight> flights, FlightReservationDto fr) {
+   public Flight getFlight(List<Flight> flights, FlightReservationDto fr) {
       return flights.stream()
             .filter(flight -> flight.getOrigin().equalsIgnoreCase(fr.getOrigin()) &&
                   flight.getDestination().equalsIgnoreCase(fr.getDestination()) &&

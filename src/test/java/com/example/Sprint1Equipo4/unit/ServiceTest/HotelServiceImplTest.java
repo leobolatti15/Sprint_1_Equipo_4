@@ -225,6 +225,7 @@ public class HotelServiceImplTest {
         ReservationDto result = hotelService.bookHotel(req);
 
         // Assert
+        Assertions.assertNotNull(result);
         assertEquals("La reserva se realizó satisfactoriamente", result.getStatus().getMessage(),
                 "El mensaje de estado debería ser 'La reserva se realizó satisfactoriamente'");
 
