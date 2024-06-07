@@ -14,8 +14,8 @@
     "destination": "Bogota",
     "seat_type": "Business",
     "price_per_person": 43200,
-    "date_from": "2025-02-10",
-    "date_to": "2025-02-20"
+    "date_from": "10/02/2025",
+    "date_to": "20/02/2025"
   },
   {
     "flight_number": "PIBA-1420",
@@ -29,7 +29,7 @@
   {
     "flight_number": "BATU-5536",
     "origin": "Buenos Aires",
-    "destination": "Tucuman",
+    "destination": "Tucumán",
     "seat_type": "Economy",
     "price_per_person": 7320,
     "date_from": "10/02/2025",
@@ -37,8 +37,8 @@
   },
   {
     "flight_number": "TUPI-3369",
-    "origin": "Tucuman",
-    "destination": "Puerto Iguazu",
+    "origin": "Tucumán",
+    "destination": "Puerto Iguazú",
     "seat_type": "Business",
     "price_per_person": 12530,
     "date_from": "12/02/2025",

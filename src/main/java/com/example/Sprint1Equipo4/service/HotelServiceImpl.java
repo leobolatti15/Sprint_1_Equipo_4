@@ -90,7 +90,8 @@ public class HotelServiceImpl implements HotelService {
       List<Hotel> allHotels = hotelRepository.findAll();
       List<Hotel> availableHotels = allHotels.stream()
             .filter(hotel -> !hotel.getReserved())
-            .filter(hotel -> dateFrom.isBefore(hotel.getDateTo()) && dateTo.isAfter(hotel.getDateFrom()))
+            .filter(hotel -> (hotel.getDateFrom().isAfter(dateFrom) || hotel.getDateTo().isBefore(dateTo))
+                    || (hotel.getDateFrom().equals(dateFrom) && hotel.getDateTo().equals(dateTo)))
             .filter(hotel -> hotel.getDestination().equals(destination))
             .toList();
 
