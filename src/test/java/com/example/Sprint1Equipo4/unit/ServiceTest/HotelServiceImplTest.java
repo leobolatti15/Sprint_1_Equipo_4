@@ -26,6 +26,7 @@ import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
 
@@ -229,5 +230,15 @@ public class HotelServiceImplTest {
         assertEquals("La reserva se realizó satisfactoriamente", result.getStatus().getMessage(),
                 "El mensaje de estado debería ser 'La reserva se realizó satisfactoriamente'");
 
+    }
+    @Test
+    public void testBookHotelNotFound() {
+        // Configurar el mock para que el repositorio devuelva una lista vacía
+        when(hotelRepository.findAll()).thenReturn(Collections.emptyList());
+
+        // Asegurarse de que se lanza la excepción HotelNotFoundException
+        Assertions.assertThrows(HotelNotFoundException.class, () -> {
+            hotelService.bookHotel(req);
+        });
     }
 }

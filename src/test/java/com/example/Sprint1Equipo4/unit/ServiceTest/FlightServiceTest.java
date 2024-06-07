@@ -7,6 +7,8 @@ import com.example.Sprint1Equipo4.dto.request.PaymentMethodsDto;
 import com.example.Sprint1Equipo4.dto.response.FlightDTO;
 import com.example.Sprint1Equipo4.dto.response.FlightResDto;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
+import com.example.Sprint1Equipo4.exception.DateOutOfRangeException;
+import com.example.Sprint1Equipo4.exception.FlightNotFoundException;
 import com.example.Sprint1Equipo4.model.Flight;
 import com.example.Sprint1Equipo4.repository.FlightRepositoryImpl;
 import com.example.Sprint1Equipo4.service.FlightService;
@@ -22,9 +24,12 @@ import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -102,5 +107,71 @@ public class FlightServiceTest {
 
         assertEquals("El proceso termino satisfactoriamente", reservaObtenida.getStatusDTO().getMessage());
     }
+
+    @Test
+    public void flightAvaible(){
+        //arrange
+        LocalDate dateFrom = LocalDate.of(2025,02,10);
+        LocalDate dateTo = LocalDate.of(2025,03,20);
+        String origin = "Puerto Iguazu";
+        String destination = "Bogota";
+        List<FlightDTO> expectedFlights = Arrays.asList(vueloDto1, vueloDto2);
+
+//ACT
+        List <Flight> allFlights = Arrays.asList(vuelo1, vuelo2);
+
+        Mockito.when(flightRepository.findAll()).thenReturn(allFlights);
+        Mockito.when(modelMapper.map(vuelo1, FlightDTO.class)).thenReturn(vueloDto1);
+        when(modelMapper.map(vuelo2, FlightDTO.class)).thenReturn(vueloDto2);
+
+        List<FlightDTO> result = flightService.flightsAvailable(dateFrom, dateTo, origin, destination);
+
+        Assertions.assertEquals(expectedFlights, result, "Las listas no coinciden");
+    }
+    @Test
+    public void listFlights(){
+        //arrange
+        List<FlightDTO> expectedFlights = Arrays.asList(vueloDto1, vueloDto2);
+        Mockito.when(flightRepository.findAll()).thenReturn(Arrays.asList(vuelo1, vuelo2));
+
+        Mockito.when(modelMapper.map(vuelo1, FlightDTO.class)).thenReturn(vueloDto1);
+        when(modelMapper.map(vuelo2, FlightDTO.class)).thenReturn(vueloDto2);
+
+        List<FlightDTO> result = flightService.listFlights();
+        Assertions.assertEquals(expectedFlights, result, "Las listas no coinciden");
+    }
+    @Test
+    public void testGetFlightFail() {
+        // Configurar el mock para que el repositorio devuelva una lista vacía
+        when(flightRepository.findAll()).thenReturn(Collections.emptyList());
+
+        // Crear una instancia de FlightReservationDto para pasar al método getFlight
+        FlightReservationDto fr = new FlightReservationDto();
+        fr.setOrigin("Origin");
+        fr.setDestination("Destination");
+        fr.setDateFrom(LocalDate.of(2023, 6, 1));
+        fr.setDateTo(LocalDate.of(2023, 6, 10));
+
+        // Llamar al método listFlights para obtener la lista de vuelos (vacía en este caso)
+        List<Flight> flights = flightRepository.findAll();
+
+        // Asegurarse de que se lanza la excepción FlightNotFoundException
+        assertThrows(FlightNotFoundException.class, () -> {
+            flightService.getFlight(flights, fr);
+        });
+    }
+
+    @Test
+    public void flightValidateDateFail(){
+        LocalDate dateFrom = LocalDate.of(2025, 2, 20);
+        LocalDate dateTo = LocalDate.of(2025, 2, 10);
+        String destination = "Bogota";
+
+        // Act & Assert
+        assertThrows(DateOutOfRangeException.class, () -> {
+            flightService.validateDateRangeFlight(dateFrom, dateTo, destination);
+        });
+    }
+
 
 }

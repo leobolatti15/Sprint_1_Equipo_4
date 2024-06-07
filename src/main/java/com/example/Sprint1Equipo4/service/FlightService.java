@@ -4,6 +4,7 @@ import com.example.Sprint1Equipo4.dto.request.FlightReqDto;
 import com.example.Sprint1Equipo4.dto.request.FlightReservationDto;
 import com.example.Sprint1Equipo4.dto.response.FlightDTO;
 import com.example.Sprint1Equipo4.dto.response.FlightResDto;
+import com.example.Sprint1Equipo4.exception.DateOutOfRangeException;
 import com.example.Sprint1Equipo4.model.Flight;
 import com.example.Sprint1Equipo4.dto.response.ResponseFlightDTO;
 
@@ -25,7 +26,7 @@ public interface FlightService {
 
    Flight upDate(FlightDTO flight);
 
-   void validateDateRangeFlight(LocalDate dateFrom, LocalDate dateTo, String destination);
+   DateOutOfRangeException validateDateRangeFlight(LocalDate dateFrom, LocalDate dateTo, String destination);
 
    Flight getFlight(List<Flight> allFlight, FlightReservationDto reservation);
 }

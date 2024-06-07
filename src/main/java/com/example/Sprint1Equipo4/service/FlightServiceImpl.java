@@ -57,7 +57,7 @@ public class FlightServiceImpl implements FlightService {
             .collect(Collectors.toList());
    }
 
-   public void validateDateRangeFlight(LocalDate dateFrom, LocalDate dateTo, String destination) {
+   public DateOutOfRangeException validateDateRangeFlight(LocalDate dateFrom, LocalDate dateTo, String destination) {
       if (dateFrom.isAfter(dateTo)) {
          throw new DateOutOfRangeException();
       }
@@ -73,6 +73,8 @@ public class FlightServiceImpl implements FlightService {
       if (!isInRange) {
          throw new DateOutOfRangeException();
       }
+
+      return null;
    }
 
    public Flight getFlight(List<Flight> flights, FlightReservationDto fr) {
