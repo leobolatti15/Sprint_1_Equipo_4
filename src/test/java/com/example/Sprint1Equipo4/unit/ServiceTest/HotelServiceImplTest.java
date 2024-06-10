@@ -182,11 +182,13 @@ public class HotelServiceImplTest {
         LocalDate dateFrom = LocalDate.of(2025, 02, 10);
         LocalDate dateTo = LocalDate.of(2025, 03, 20);
         String destination = "Puerto Iguazu";
+        List<Hotel> allHotels = List.of(hotel1);
+        List <HotelDTO> esperado = List.of(hotelDTO1);
 
-        // Act
-        List<Hotel> allHotels = List.of(hotel1, hotel2);
 
         Mockito.when(hotelRepository.findAll()).thenReturn(allHotels);
+
+
         Mockito.when(modelMapper.map(any(Hotel.class), eq(HotelDTO.class)))
                 .thenAnswer(invocation -> {
                     Hotel hotel = invocation.getArgument(0);
@@ -196,8 +198,7 @@ public class HotelServiceImplTest {
         List<HotelDTO> result = hotelService.findAvailableHotels(dateFrom, dateTo, destination);
 
         // Assert
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals(2, result.size());
+        Assertions.assertEquals(esperado, result, "No coinciden las listas");
     }
 
 

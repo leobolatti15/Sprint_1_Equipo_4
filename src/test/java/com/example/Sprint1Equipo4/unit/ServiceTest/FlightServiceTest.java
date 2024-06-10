@@ -162,9 +162,9 @@ public class FlightServiceTest {
     }
 
     @Test
-    public void flightValidateDateFail(){
-        LocalDate dateFrom = LocalDate.of(2025, 2, 20);
-        LocalDate dateTo = LocalDate.of(2025, 2, 10);
+    public void flightDateFromAfterTo() throws Exception {
+        LocalDate dateFrom = LocalDate.of(2025, 02, 20);
+        LocalDate dateTo = LocalDate.of(2025, 02, 10);
         String destination = "Bogota";
 
         // Act & Assert
@@ -172,6 +172,23 @@ public class FlightServiceTest {
             flightService.validateDateRangeFlight(dateFrom, dateTo, destination);
         });
     }
+
+    @Test
+    public void flightOutOfRange(){
+        LocalDate dateFrom = LocalDate.of(2025, 02, 20);
+        LocalDate dateTo = LocalDate.of(2030, 02, 10);
+        String destination = "Bogota";
+
+        // Act & Assert
+        assertThrows(DateOutOfRangeException.class, () -> {
+            flightService.validateDateRangeFlight(dateFrom, dateTo, destination);
+        });
+    }
+
+
+
+
+
 
 
 }
