@@ -5,6 +5,7 @@ La colección del proyecto se encuentra en la carpeta resources
 
 ## Descripción
 Se implementó una API REST para dar solución a un problema planteado por una agencia de turismo, que desea recibir solicitudes de reserva de hoteles y vuelos. 
+Se agregaron validaciones y test unitarios para los métodos de cada historia de usuario.
 Se cuenta con datos de cada uno de ellos y requerimientos mínimos: 
 
 - Hoteles
@@ -40,5 +41,9 @@ EXCEPCIONES:
   1) Fecha fuera de rango: fecha fuera del rango de reserva o fecha dateFrom es posterior a dateTo
   2) Pedido sin parámetros: falta alguno de: dateTo, dateFrom, origin, destination. Si faltan todos se mantiene la respuesta de lista completa de hoteles/vuelos.
 
+SPRINT 2:
+Todas las actividades se realizaron de manera grupal.
+
 ## Decisiones grupales
 Se resolvieron conflictos en grupo al integrar cada historia de usuario.
+Se decidió trabajar en manera grupal.
