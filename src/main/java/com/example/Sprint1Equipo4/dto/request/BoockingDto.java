@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class BoockingDto {
 
@@ -41,4 +40,15 @@ public class BoockingDto {
     @JsonProperty("payment_method")
     private PaymentMethodsDto payment;
 
+    public BoockingDto(LocalDate dateFrom, LocalDate dateTo, String destination, String hotelCode,
+                       Integer peopleAmount, String roomType, List<PeopleDto> people, PaymentMethodsDto payment) {
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
+        this.destination = destination;
+        this.hotelCode = hotelCode;
+        this.peopleAmount = peopleAmount;
+        this.roomType = roomType;
+        this.people = people;
+        this.payment = payment;
+    }
 }

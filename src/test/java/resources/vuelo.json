@@ -2,7 +2,7 @@
   {
     "flight_number": "BAPI-1235",
     "origin": "Buenos Aires",
-    "destination": "Puerto Iguazú",
+    "destination": "Puerto Iguazu",
     "seat_type": "Economy",
     "price_per_person": 6500,
     "date_from": "10/02/2025",
@@ -10,8 +10,8 @@
   },
   {
     "flight_number": "PIBA-1420",
-    "origin": "Puerto Iguazú",
-    "destination": "Bogotá",
+    "origin": "Puerto Iguazu",
+    "destination": "Bogota",
     "seat_type": "Business",
     "price_per_person": 43200,
     "date_from": "10/02/2025",
@@ -19,8 +19,8 @@
   },
   {
     "flight_number": "PIBA-1420",
-    "origin": "Puerto Iguazú",
-    "destination": "Bogotá",
+    "origin": "Puerto Iguazu",
+    "destination": "Bogota",
     "seat_type": "Economy",
     "price_per_person": 25735,
     "date_from": "10/02/2025",
