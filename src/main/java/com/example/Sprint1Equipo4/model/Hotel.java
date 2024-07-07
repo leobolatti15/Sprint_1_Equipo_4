@@ -25,6 +25,9 @@ public class Hotel {
    private LocalDate dateFrom;
    private LocalDate dateTo;
    private Boolean reserved;
+    @OneToOne
+    @JoinColumn(name="booking_id", referencedColumnName = "id")
+    private HotelBooking hotelBooking;
 
     public void setId(int i) {
     }

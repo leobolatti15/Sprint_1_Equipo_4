@@ -17,7 +17,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class BoockingDto {
-
+    @JsonProperty("booking_id")
+    private Integer bookingId;
     @JsonProperty("date_from")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonDeserialize(using = LocalDateDeserializer.class)

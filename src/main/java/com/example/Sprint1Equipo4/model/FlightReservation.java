@@ -29,9 +29,15 @@ public class FlightReservation {
     private Integer seats;
     private String seatType;
 
+    @OneToMany(mappedBy = "reservations")
     private List<People> people;
 
+    @ManyToOne
+    @JoinColumn(name="reservation_id")
     private PaymentMethod paymentMethod;
+
+    @OneToOne(mappedBy = "flightReservation")
+    private Flight flight;
 
 
 }

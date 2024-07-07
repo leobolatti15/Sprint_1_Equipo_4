@@ -24,6 +24,13 @@ public class People {
     private LocalDate birthDate;
 
     private String mail;
+    @ManyToOne
+    @JoinColumn(name="reservation_id")
+    private FlightReservation flightReservation;
+
+    @ManyToOne
+    @JoinColumn(name="booking_id")
+    private HotelBooking hotelBooking;
 
 
 

@@ -33,12 +33,13 @@ public class HotelBooking {
 
     private String roomType;
 
+    @OneToMany(mappedBy = "bookings")
     private List<People> people;
 
     private PaymentMethod paymentMethod;
 
-    @OneToOne(mappedBy = "booking")
-    private HotelBooking hotelBooking;
+    @OneToOne(mappedBy = "hotelBooking")
+    private Hotel hotel;
 
 }
 
