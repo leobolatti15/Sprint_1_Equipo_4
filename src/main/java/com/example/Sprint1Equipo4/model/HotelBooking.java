@@ -35,7 +35,7 @@ public class HotelBooking {
 
     private String roomType;
 
-    @OneToMany(mappedBy = "bookings")
+    @OneToMany(mappedBy = "hotelBooking")
     private List<People> people;
     @ManyToOne
     @JoinColumn(name = "booking_id")

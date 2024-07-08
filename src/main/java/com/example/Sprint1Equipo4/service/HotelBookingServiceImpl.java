@@ -25,7 +25,7 @@ public class HotelBookingServiceImpl implements HotelBookingService{
     HotelBookingRepository bookingRepository;
 
     @Autowired
-    private ModelMapper modelMapper;
+    ModelMapper modelMapper;
 
     @Override
     public List<BoockingDto> listAllHotelBookings() {

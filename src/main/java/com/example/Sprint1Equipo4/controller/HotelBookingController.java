@@ -25,13 +25,13 @@ public class HotelBookingController {
         return new ResponseEntity<>(hotelBookingService.listAllHotelBookings(), HttpStatus.OK);
     }
 
-    @PutMapping("/edit") // Actualizar una reserva buscando por id
+    @PutMapping("/hotel-booking/edit") // Actualizar una reserva buscando por id
     public ResponseEntity<StatusDTO> editBooking(@RequestBody @Valid ReservationDtoRequest booking, @RequestParam Long id){
         StatusDTO status = hotelBookingService.updateHotelBooking(booking, id);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/hotel-booking/delete")
     public ResponseEntity<StatusDTO> deleteBooking(@RequestParam Long id){
         StatusDTO status = hotelBookingService.deleteHotelBooking(id);
         return new ResponseEntity<>(status, HttpStatus.OK);

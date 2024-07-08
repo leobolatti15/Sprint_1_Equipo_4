@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,7 +19,7 @@ public class FlightReservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Setter
     private String userName;
 
     private LocalDate goingDate;
@@ -29,7 +30,7 @@ public class FlightReservation {
     private Integer seats;
     private String seatType;
 
-    @OneToMany(mappedBy = "reservations")
+    @OneToMany(mappedBy = "flightReservation")
     private List<People> people;
 
     @ManyToOne
@@ -38,6 +39,9 @@ public class FlightReservation {
 
     @OneToOne(mappedBy = "flightReservation")
     private Flight flight;
+
+    public void setUserName(String userName) {
+    }
 
 
 }

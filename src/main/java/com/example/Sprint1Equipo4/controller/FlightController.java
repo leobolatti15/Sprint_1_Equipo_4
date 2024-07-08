@@ -10,15 +10,17 @@ import com.example.Sprint1Equipo4.model.Flight;
 import com.example.Sprint1Equipo4.dto.response.ResponseFlightDTO;
 import com.example.Sprint1Equipo4.service.FlightService;
 import com.example.Sprint1Equipo4.service.HotelService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-
+@Validated
 @RestController
 @RequestMapping("/api/v1")
 
@@ -69,12 +71,12 @@ public class FlightController {
     }
 
     @PostMapping("/flight-reservation")
-    public ResponseEntity<FlightResDto> reserve(@RequestBody FlightReqDto flightReqDto) {
+    public ResponseEntity<FlightResDto> reserve(@RequestBody @Valid FlightReqDto flightReqDto) {
         return new ResponseEntity<>(flightService.reserve(flightReqDto), HttpStatus.CREATED);
     }
 
     @PostMapping("/flight")
-    public ResponseEntity<Flight> create(@RequestBody FlightDTO flightDTO) {
+    public ResponseEntity<Flight> create(@RequestBody @Valid FlightDTO flightDTO) {
         return new ResponseEntity<>(flightService.create(flightDTO), HttpStatus.CREATED);
     }
 
