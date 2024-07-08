@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,6 +21,7 @@ public class HotelBooking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     private String userName;
 
     private LocalDate dateFrom;
@@ -35,12 +37,16 @@ public class HotelBooking {
 
     @OneToMany(mappedBy = "bookings")
     private List<People> people;
-
+    @ManyToOne
+    @JoinColumn(name = "booking_id")
     private PaymentMethod paymentMethod;
 
     @OneToOne(mappedBy = "hotelBooking")
     private Hotel hotel;
 
+
+    public void setUserName(String userName) {
+    }
 }
 
 
