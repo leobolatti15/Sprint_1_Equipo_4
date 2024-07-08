@@ -20,11 +20,11 @@ public interface FlightService {
 
    FlightDTO findByFlightName(String name);
 
-   ResponseFlightDTO deleteFlight(String name);
+   ResponseFlightDTO deleteFlight(String flightCode);
 
-   Flight create(FlightDTO flight);
+   FlightDTO create(FlightDTO flight);
 
-   Flight upDate(FlightDTO flight);
+   FlightDTO upDate(FlightDTO flight);
 
    DateOutOfRangeException validateDateRangeFlight(LocalDate dateFrom, LocalDate dateTo, String destination);
 

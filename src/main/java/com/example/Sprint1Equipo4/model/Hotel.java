@@ -26,10 +26,6 @@ public class Hotel {
    private LocalDate dateTo;
    private Boolean reserved;
 
-    public void setId(int i) {
-    }
-
-    public Object getId() {
-        return null;
+    public Hotel(String s, String cataratasHotel, String puertoIguazu, String aDouble, int i, LocalDate of, LocalDate of1, boolean b) {
     }
 }

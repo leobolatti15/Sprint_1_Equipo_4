@@ -17,8 +17,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 
 public class FlightDTO {
-    @JsonProperty("flight_number")
-    private String flightNumber;
+    @JsonProperty("flight_code")
+    private String flightCode;
     private String origin;
     private String destination;
     @JsonProperty("seat_type")
@@ -26,10 +26,10 @@ public class FlightDTO {
     @JsonProperty("price_per_person")
     private Integer pricePerPerson;
     @JsonProperty("date_from")
-    @JsonFormat(pattern ="dd/MM/yyyy")
-    private LocalDate departureDate;
+    @JsonFormat(pattern ="yyyy-MM-dd")
+    private LocalDate dateFrom;
     @JsonProperty("date_to")
-    @JsonFormat(pattern ="dd/MM/yyyy")
-    private LocalDate returnDate;
+    @JsonFormat(pattern ="yyyy-MM-dd")
+    private LocalDate dateTo;
 
 }

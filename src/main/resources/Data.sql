@@ -15,17 +15,17 @@ INSERT INTO hotels (hotel_code, name, destination, room_type, price_per_night, d
 VALUES ('BH-0002', 'Hotel Bristol 2', 'Buenos Aires', 'Double', 7200, '2025-02-12', '2025-04-17', 0);
 
 -- Insertando el primer vuelo
-INSERT INTO flights (flight_number, origin, destination, seat_type, price_per_person, date_from, date_to)
+INSERT INTO flights (flight_code, origin, destination, seat_type, price_per_person, date_from, date_to)
 VALUES ('BAPI-1235', 'Buenos Aires', 'Puerto Iguazu', 'Economy', 6500, '2025-02-10', '2025-02-15');
 
 -- Insertando el segundo vuelo
-INSERT INTO flights (flight_number, origin, destination, seat_type, price_per_person, date_from, date_to)
+INSERT INTO flights (flight_code, origin, destination, seat_type, price_per_person, date_from, date_to)
 VALUES ('PIBA-1420', 'Puerto Iguazu', 'Bogota', 'Business', 43200, '2025-02-10', '2025-02-20');
 
 -- Insertando el tercer vuelo
-INSERT INTO flights (flight_number, origin, destination, seat_type, price_per_person, date_from, date_to)
+INSERT INTO flights (flight_code, origin, destination, seat_type, price_per_person, date_from, date_to)
 VALUES ('PIBA-1420', 'Puerto Iguazu', 'Bogota', 'Economy', 25735, '2025-02-10', '2025-02-21');
 
 -- Insertando el cuarto vuelo
-INSERT INTO flights (flight_number, origin, destination, seat_type, price_per_person, date_from, date_to)
+INSERT INTO flights (flight_code, origin, destination, seat_type, price_per_person, date_from, date_to)
 VALUES ('BATU-5536', 'Buenos Aires', 'Tucuman', 'Economy', 7320, '2025-02-10', '2025-02-17');
