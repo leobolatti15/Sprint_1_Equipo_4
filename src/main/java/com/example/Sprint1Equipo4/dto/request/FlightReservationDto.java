@@ -31,8 +31,8 @@ public class FlightReservationDto {
     private LocalDate dateTo;
     private String origin;
     private String destination;
-    @JsonProperty("flight_number")
-    private String flightNumber;
+    @JsonProperty("flight_code")
+    private String flightCode;
     @Min(value = 1, message = "La cantidad de personas debe ser un valor numérico.")
     private Integer seats;
     @JsonProperty("seat_type")

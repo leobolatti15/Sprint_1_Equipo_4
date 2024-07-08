@@ -1,15 +1,10 @@
 package com.example.Sprint1Equipo4.controller;
 
-import com.example.Sprint1Equipo4.dto.request.FlightReqDto;
 import com.example.Sprint1Equipo4.dto.response.FlightDTO;
-import com.example.Sprint1Equipo4.dto.response.FlightResDto;
-import com.example.Sprint1Equipo4.dto.response.HotelDTO;
 import com.example.Sprint1Equipo4.exception.MissingParameterException;
 
-import com.example.Sprint1Equipo4.model.Flight;
 import com.example.Sprint1Equipo4.dto.response.ResponseFlightDTO;
 import com.example.Sprint1Equipo4.service.FlightService;
-import com.example.Sprint1Equipo4.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -21,12 +16,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
-
 public class FlightController {
     @Autowired
     private FlightService flightService;
 
-    @GetMapping("/flight")
+    @GetMapping("/flights")
     public ResponseEntity<List<FlightDTO>> listFlight(
             @DateTimeFormat(pattern = "dd/MM/yyyy") @RequestParam(required = false) LocalDate date_from,
             @DateTimeFormat(pattern = "dd/MM/yyyy") @RequestParam(required = false) LocalDate date_to,
@@ -63,23 +57,18 @@ public class FlightController {
         return new ResponseEntity<>(flightDTO, HttpStatus.OK);
     }
 
-    @DeleteMapping("/flight/{name}")
-    public ResponseEntity<ResponseFlightDTO> deleteFlight(@PathVariable String name) {
-        return new ResponseEntity<>(flightService.deleteFlight(name), HttpStatus.OK);
+    @DeleteMapping("/flights/delete")
+    public ResponseEntity<ResponseFlightDTO> deleteFlight(@RequestParam String flightCode) {
+        return new ResponseEntity<>(flightService.deleteFlight(flightCode), HttpStatus.OK);
     }
 
-    @PostMapping("/flight-reservation")
-    public ResponseEntity<FlightResDto> reserve(@RequestBody FlightReqDto flightReqDto) {
-        return new ResponseEntity<>(flightService.reserve(flightReqDto), HttpStatus.CREATED);
-    }
-
-    @PostMapping("/flight")
-    public ResponseEntity<Flight> create(@RequestBody FlightDTO flightDTO) {
+    @PostMapping("/flights/new")
+    public ResponseEntity<FlightDTO> create(@RequestBody FlightDTO flightDTO) {
         return new ResponseEntity<>(flightService.create(flightDTO), HttpStatus.CREATED);
     }
 
-    @PutMapping("/flight/{name}")
-    public ResponseEntity<Flight> upDate(@RequestBody FlightDTO flightDTO, @PathVariable String name) {
+    @PutMapping("/flights/edit")
+    public ResponseEntity<FlightDTO> upDate(@RequestBody FlightDTO flightDTO, @RequestParam String flightCode) {
         return new ResponseEntity<>(flightService.upDate(flightDTO), HttpStatus.OK);
     }
 

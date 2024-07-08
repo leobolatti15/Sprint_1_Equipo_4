@@ -142,34 +142,33 @@ public class FlightServiceImpl implements FlightService {
 
    @Override
    public FlightDTO findByFlightName(String name) {
-      Flight flight = flightRepository.findByName(name);
+      Flight flight = flightRepository.findByFlightCode(name);
       return modelMapper.map(flight, FlightDTO.class);
    }
 
    @Override
-   public ResponseFlightDTO deleteFlight(String name) {
-      flightRepository.delete(name);
+   public ResponseFlightDTO deleteFlight(String flightCode) {
+      Flight flight = flightRepository.findByFlightCode(flightCode);
+      flightRepository.delete(flight);
       return new ResponseFlightDTO("El vuelo fue borrado correctamente");
    }
 
    @Override
-   public Flight create(FlightDTO flight) {
-      int flag = 0;
+   public FlightDTO create(FlightDTO flight) {
       Flight newFlight = new Flight();
-      newFlight.setFlightNumber(flight.getFlightNumber());
-      newFlight.setOrigin(flight.getOrigin());
-      newFlight.setDestination(flight.getDestination());
-      newFlight.setSeatType(flight.getSeatType());
-      newFlight.setPricePerPerson(flight.getPricePerPerson());
-      newFlight.setDateFrom(flight.getDepartureDate());
-      newFlight.setDateTo(flight.getReturnDate());
+      modelMapper.map(flight,newFlight);
       flightRepository.save(newFlight);
-      return newFlight;
+      return flight;
    }
 
    @Override
-   public Flight upDate(FlightDTO flight) {
-      Flight flightChek = create(flight);
-      return flightChek;
+   public FlightDTO upDate(FlightDTO flightDTO) {
+      Flight guardado = flightRepository.findByFlightCode(flightDTO.getFlightCode());
+
+      Flight flightUpdate = modelMapper.map(flightDTO,Flight.class);
+      flightUpdate.setId(guardado.getId());
+
+      flightRepository.save(flightUpdate);
+      return modelMapper.map(flightUpdate,FlightDTO.class);
    }
 }
