@@ -201,7 +201,7 @@ public class HotelServiceImpl implements HotelService {
       hotelBooking.setDateFrom(bookingDto.getDateFrom());
       hotelBooking.setDestination(bookingDto.getDestination());
       hotelBooking.setRoomType(bookingDto.getRoomType());
-      hotelBooking.setPeopleAmount(bookingDto.getPeople().size());
+      hotelBooking.setPeopleAmount(bookingDto.getPeopleAmount());
 
       // Mapear el DTO a la entidad PaymentMethod
       PaymentMethodsDto paymentDto = bookingDto.getPayment();

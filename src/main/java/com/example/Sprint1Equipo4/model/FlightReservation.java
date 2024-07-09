@@ -23,8 +23,8 @@ public class FlightReservation {
     @Setter
     private String userName;
 
-    private LocalDate goingDate;
-    private LocalDate returnDate;
+    private LocalDate dateFrom;
+    private LocalDate dateTo;
     private String origin;
     private String destination;
     private String fligthNumber;
