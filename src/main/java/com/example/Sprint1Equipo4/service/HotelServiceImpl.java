@@ -159,6 +159,16 @@ public class HotelServiceImpl implements HotelService {
       BoockingDto bookingDto = reservationDtoRequest.getBooking();
       numOfPeople(bookingDto);
 
+      boolean exists = hotelBookingRepository.existsByDateFromAndDateToAndDestinationAndHotelCode(
+              bookingDto.getDateFrom(),
+              bookingDto.getDateTo(),
+              bookingDto.getDestination(),
+              bookingDto.getHotelCode()
+      );
+      if (exists) {
+         throw new DuplicateBookingException();
+      }
+
       List<Hotel> allHotels = hotelRepository.findAll();
       List<Hotel> availableHotels = allHotels.stream()
             .filter(hotel -> !hotel.getReserved())

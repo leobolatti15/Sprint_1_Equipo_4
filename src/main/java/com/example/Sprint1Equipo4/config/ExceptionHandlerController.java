@@ -82,6 +82,16 @@ public class ExceptionHandlerController {
       return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
    }
 
+   @ExceptionHandler(DuplicateBookingException.class)
+   public ResponseEntity<ErrorDTO> handleDuplicateBookingException(DuplicateBookingException ex) {
+      String errorMessage = ex.getMessage();
+      if (errorMessage == null) {
+         errorMessage = "Ya hay una reserva para esa fecha y destino";
+      }
+      ErrorDTO errorResponse = new ErrorDTO(errorMessage, List.of());
+      return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+   }
+
    @ExceptionHandler(ConstraintViolationException.class)
    public ResponseEntity<ErrorDTO> validationException(ConstraintViolationException e){
       return ResponseEntity.badRequest().body(
