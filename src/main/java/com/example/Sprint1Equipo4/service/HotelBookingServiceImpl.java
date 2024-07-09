@@ -1,6 +1,5 @@
 package com.example.Sprint1Equipo4.service;
 
-import com.example.Sprint1Equipo4.dto.PeopleDto;
 import com.example.Sprint1Equipo4.dto.request.BoockingDto;
 import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
@@ -8,14 +7,12 @@ import com.example.Sprint1Equipo4.exception.InvalidRequestException;
 import com.example.Sprint1Equipo4.exception.ResourceNotFoundException;
 import com.example.Sprint1Equipo4.model.HotelBooking;
 import com.example.Sprint1Equipo4.model.PaymentMethod;
-import com.example.Sprint1Equipo4.model.People;
 import com.example.Sprint1Equipo4.repository.HotelBookingRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,9 +51,6 @@ public class HotelBookingServiceImpl implements HotelBookingService{
         existingHotelBooking.setHotelCode(bookingDto.getHotelCode());
         existingHotelBooking.setPeopleAmount(bookingDto.getPeopleAmount());
         existingHotelBooking.setRoomType(bookingDto.getRoomType());
-        existingHotelBooking.setPeople(bookingDto.getPeople().stream()
-                .map(peopleDto -> modelMapper.map(peopleDto, People.class))
-                .collect(Collectors.toList()));
         existingHotelBooking.setPaymentMethod(modelMapper.map(bookingDto.getPayment(), PaymentMethod.class));
 
         // Guarda reserva actualizada

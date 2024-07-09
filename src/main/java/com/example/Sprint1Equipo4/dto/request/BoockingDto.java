@@ -19,25 +19,34 @@ import java.util.List;
 public class BoockingDto {
     @JsonProperty("booking_id")
     private Integer bookingId;
+
     @JsonProperty("date_from")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate dateFrom;
+
     @JsonProperty("date_to")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate dateTo;
+
     private String destination;
+
     @JsonProperty("hotel_code")
     private String hotelCode;
+
     @Min(value = 1, message = "La cantidad de personas debe ser un valor numérico.")
     @JsonProperty("people_amount")
+
     private Integer peopleAmount;
+
     @JsonProperty("room_type")
     private String roomType;
+
     private List<PeopleDto>people;
+
     @JsonProperty("payment_method")
     private PaymentMethodsDto payment;
 

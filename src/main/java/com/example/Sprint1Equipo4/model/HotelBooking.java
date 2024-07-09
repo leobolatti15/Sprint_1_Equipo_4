@@ -21,7 +21,7 @@ public class HotelBooking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
+
     private String userName;
 
     private LocalDate dateFrom;
@@ -35,14 +35,16 @@ public class HotelBooking {
 
     private String roomType;
 
-    @OneToMany(mappedBy = "hotelBooking")
-    private List<People> people;
     @ManyToOne
-    @JoinColumn(name = "booking_id")
+    @JoinColumn(name = "payments_method_id")
     private PaymentMethod paymentMethod;
 
     @OneToOne(mappedBy = "hotelBooking")
     private Hotel hotel;
+
+    @ManyToOne
+    @JoinColumn(name="clients_id")
+    private Client client;
 
 
     public void setUserName(String userName) {

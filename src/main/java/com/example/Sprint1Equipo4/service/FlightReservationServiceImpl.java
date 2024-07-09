@@ -1,15 +1,12 @@
 package com.example.Sprint1Equipo4.service;
 
-import com.example.Sprint1Equipo4.dto.request.BoockingDto;
 import com.example.Sprint1Equipo4.dto.request.FlightReqDto;
 import com.example.Sprint1Equipo4.dto.request.FlightReservationDto;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.exception.InvalidRequestException;
 import com.example.Sprint1Equipo4.exception.ResourceNotFoundException;
 import com.example.Sprint1Equipo4.model.FlightReservation;
-import com.example.Sprint1Equipo4.model.HotelBooking;
 import com.example.Sprint1Equipo4.model.PaymentMethod;
-import com.example.Sprint1Equipo4.model.People;
 import com.example.Sprint1Equipo4.repository.FlightReservationRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,11 +51,21 @@ public class FlightReservationServiceImpl implements FlightReservationService{
         existingFlightReservation.setOrigin(flightReservationDto.getOrigin());
         existingFlightReservation.setFligthNumber(flightReservationDto.getFlightNumber());
         existingFlightReservation.setSeatType(flightReservationDto.getSeatType());
-        existingFlightReservation.setPeople(flightReservationDto.getPeople().stream()
+        existingFlightReservation.setPaymentMethod(modelMapper.map(flightReservationDto.getPaymentMethodsDto(), PaymentMethod.class));
+
+
+/*
+        existingFlightReservation.setGoingDate(flightReservationDto.getDateFrom());
+        existingFlightReservation.setReturnDate(flightReservationDto.getDateTo());
+        existingFlightReservation.setDestination(flightReservationDto.getDestination());
+        existingFlightReservation.setOrigin(flightReservationDto.getOrigin());
+        existingFlightReservation.setFligthNumber(flightReservationDto.getFlightNumber());
+        existingFlightReservation.setSeatType(flightReservationDto.getSeatType());
+        existingFlightReservation.set(flightReservationDto.getPeople().stream()
                 .map(peopleDto -> modelMapper.map(peopleDto, People.class))
                 .collect(Collectors.toList()));
         existingFlightReservation.setPaymentMethod(modelMapper.map(flightReservationDto.getPaymentMethodsDto(), PaymentMethod.class));
-
+*/
         // Guarda reserva actualizada
         flightReservationRepository.save(existingFlightReservation);
 

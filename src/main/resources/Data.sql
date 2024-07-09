@@ -30,4 +30,4 @@ VALUES ('PIBA-1420', 'Puerto Iguazu', 'Bogota', 'Economy', 25735, '2025-02-10', 
 INSERT INTO flights (flight_number, origin, destination, seat_type, price_per_person, date_from, date_to)
 VALUES ('BATU-5536', 'Buenos Aires', 'Tucuman', 'Economy', 7320, '2025-02-10', '2025-02-17');
 
--- Insertando una reserva
+

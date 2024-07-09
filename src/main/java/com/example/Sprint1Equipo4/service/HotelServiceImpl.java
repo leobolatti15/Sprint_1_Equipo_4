@@ -1,15 +1,21 @@
 package com.example.Sprint1Equipo4.service;
 
 import com.example.Sprint1Equipo4.dto.request.BoockingDto;
+import com.example.Sprint1Equipo4.dto.request.PaymentMethodsDto;
 import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
 import com.example.Sprint1Equipo4.dto.response.HotelDTO;
 import com.example.Sprint1Equipo4.dto.response.ReservationDto;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.exception.*;
 import com.example.Sprint1Equipo4.model.Hotel;
+import com.example.Sprint1Equipo4.model.HotelBooking;
+import com.example.Sprint1Equipo4.model.PaymentMethod;
+import com.example.Sprint1Equipo4.repository.HotelBookingRepository;
 import com.example.Sprint1Equipo4.repository.HotelRepository;
+import com.example.Sprint1Equipo4.repository.PaymentMethodRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,6 +29,12 @@ public class HotelServiceImpl implements HotelService {
 
    @Autowired
    private HotelRepository hotelRepository;
+
+   @Autowired
+   private PaymentMethodRepository paymentMethodRepository;
+
+   @Autowired
+   private HotelBookingRepository hotelBookingRepository;
 
    @Autowired
    private final ModelMapper modelMapper;
@@ -143,7 +155,7 @@ public class HotelServiceImpl implements HotelService {
    }
 
    @Override
-   public ReservationDto bookHotel(ReservationDtoRequest reservationDtoRequest) {
+   public StatusDTO bookHotel(ReservationDtoRequest reservationDtoRequest) {
       BoockingDto bookingDto = reservationDtoRequest.getBooking();
       numOfPeople(bookingDto);
 
@@ -170,7 +182,40 @@ public class HotelServiceImpl implements HotelService {
       reservationDto.setBooking(reservationDtoRequest.getBooking());
       reservationDto.setStatus(new StatusDTO(201, "La reserva se realizó satisfactoriamente"));
 
-      return reservationDto;
+
+
+      HotelBooking hotelBooking = new HotelBooking();
+      hotelBooking.setUserName(reservationDtoRequest.getUserName());
+      hotelBooking.setHotelCode(bookingDto.getHotelCode());
+      hotelBooking.setDateTo(bookingDto.getDateTo());
+      hotelBooking.setDateFrom(bookingDto.getDateFrom());
+      hotelBooking.setDestination(bookingDto.getDestination());
+      hotelBooking.setRoomType(bookingDto.getRoomType());
+      hotelBooking.setPeopleAmount(bookingDto.getPeople().size());
+
+      // Mapear el DTO a la entidad PaymentMethod
+      PaymentMethodsDto paymentDto = bookingDto.getPayment();
+      PaymentMethod paymentMethod = new PaymentMethod();
+      paymentMethod.setType(paymentDto.getType());
+      paymentMethod.setNumber(paymentDto.getNumberCard());
+      paymentMethod.setDues(paymentDto.getDues());
+
+      PaymentMethod existingPaymentMethod = paymentMethodRepository.findByTypeAndNumber(paymentMethod.getType(), paymentMethod.getNumber());
+      if (existingPaymentMethod == null) {
+         paymentMethodRepository.save(paymentMethod);
+      } else {
+         paymentMethod = existingPaymentMethod;
+      }
+
+      hotelBooking.setPaymentMethod(paymentMethod);
+
+      hotelBooking.setUserName(reservationDtoRequest.getUserName());
+      selectedHotel.setReserved(true);
+      hotelRepository.save(selectedHotel);
+
+      hotelBookingRepository.save(hotelBooking);
+
+      return new StatusDTO(200, "Reserva de hotel dada de alta correctamente");
    }
 
    private double calculateTotalPrice(Hotel hotel, LocalDate dateFrom, LocalDate dateTo) {

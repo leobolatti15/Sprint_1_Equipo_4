@@ -19,6 +19,7 @@ public class FlightReservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Setter
     private String userName;
 
@@ -30,15 +31,17 @@ public class FlightReservation {
     private Integer seats;
     private String seatType;
 
-    @OneToMany(mappedBy = "flightReservation")
-    private List<People> people;
 
     @ManyToOne
-    @JoinColumn(name="reservation_id")
+    @JoinColumn(name="payments_method_id")
     private PaymentMethod paymentMethod;
 
     @OneToOne(mappedBy = "flightReservation")
     private Flight flight;
+
+    @ManyToOne
+    @JoinColumn(name="clients_id")
+    private Client client;
 
     public void setUserName(String userName) {
     }

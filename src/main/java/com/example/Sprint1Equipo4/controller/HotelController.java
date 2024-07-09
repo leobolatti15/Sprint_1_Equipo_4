@@ -57,9 +57,9 @@ public class HotelController {
    }
 
    @PostMapping("/booking")
-   public ResponseEntity<ReservationDto> bookHotel(@RequestBody @Valid ReservationDtoRequest reservationDtoRequest) {
-      ReservationDto reservationDto = hotelService.bookHotel(reservationDtoRequest);
-      return ResponseEntity.status(HttpStatus.CREATED).body(reservationDto);
+   public ResponseEntity<StatusDTO> bookHotel(@RequestBody @Valid ReservationDtoRequest reservationDtoRequest) {
+      StatusDTO statusDTO = hotelService.bookHotel(reservationDtoRequest);
+      return ResponseEntity.status(HttpStatus.CREATED).body(statusDTO);
    }
 
    @GetMapping("/hotel/{hotelCode}")
