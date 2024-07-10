@@ -45,8 +45,8 @@ public class FlightReservationServiceImpl implements FlightReservationService{
         existingFlightReservation.setUserName(reservation.getUserName());
         FlightReservationDto flightReservationDto = reservation.getFlightReservationDto();
 
-        existingFlightReservation.setGoingDate(flightReservationDto.getDateFrom());
-        existingFlightReservation.setReturnDate(flightReservationDto.getDateTo());
+        existingFlightReservation.setDateFrom(flightReservationDto.getDateFrom());
+        existingFlightReservation.setDateTo(flightReservationDto.getDateTo());
         existingFlightReservation.setDestination(flightReservationDto.getDestination());
         existingFlightReservation.setOrigin(flightReservationDto.getOrigin());
         existingFlightReservation.setFligthNumber(flightReservationDto.getFlightNumber());

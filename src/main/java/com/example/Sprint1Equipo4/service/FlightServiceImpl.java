@@ -136,7 +136,7 @@ public class FlightServiceImpl implements FlightService {
 
       FlightReservationDto flightReservationDto = fDto.getFlightReservationDto();
 
-      boolean exists = flightReservationRepository.existByDateFromAndDateToAndOriginAndDestination(
+      boolean exists = flightReservationRepository.existsByDateFromAndDateToAndOriginAndDestination(
               flightReservationDto.getDateFrom(),
               flightReservationDto.getDateTo(),
               flightReservationDto.getOrigin(),
