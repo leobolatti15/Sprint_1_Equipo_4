@@ -18,7 +18,7 @@ public class Flight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String flightNumber;
+    private String flightCode;
     private String origin;
     private String destination;
     private String seatType;
@@ -27,4 +27,7 @@ public class Flight {
     private LocalDate dateFrom;
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dateTo;
+    @OneToOne
+    @JoinColumn(name="reservation_id", referencedColumnName = "id")
+    private FlightReservation flightReservation;
 }

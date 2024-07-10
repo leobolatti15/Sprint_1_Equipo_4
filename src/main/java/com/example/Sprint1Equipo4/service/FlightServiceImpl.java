@@ -2,16 +2,18 @@ package com.example.Sprint1Equipo4.service;
 
 import com.example.Sprint1Equipo4.dto.request.FlightReqDto;
 import com.example.Sprint1Equipo4.dto.request.FlightReservationDto;
+import com.example.Sprint1Equipo4.dto.request.PaymentMethodsDto;
 import com.example.Sprint1Equipo4.dto.response.FlightDTO;
 import com.example.Sprint1Equipo4.dto.response.FlightResDto;
 import com.example.Sprint1Equipo4.dto.response.ResponseFlightDTO;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
-import com.example.Sprint1Equipo4.exception.DateOutOfRangeException;
-import com.example.Sprint1Equipo4.exception.FlightNotFoundException;
-import com.example.Sprint1Equipo4.exception.InvalidDuesForCredit;
-import com.example.Sprint1Equipo4.exception.InvalidDuesForDebit;
+import com.example.Sprint1Equipo4.exception.*;
 import com.example.Sprint1Equipo4.model.Flight;
+import com.example.Sprint1Equipo4.model.FlightReservation;
+import com.example.Sprint1Equipo4.model.PaymentMethod;
 import com.example.Sprint1Equipo4.repository.FlightRepository;
+import com.example.Sprint1Equipo4.repository.FlightReservationRepository;
+import com.example.Sprint1Equipo4.repository.PaymentMethodRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,14 @@ public class FlightServiceImpl implements FlightService {
    FlightRepository flightRepository;
 
    @Autowired
+   FlightReservationRepository flightReservationRepository;
+
+   @Autowired
+   PaymentMethodRepository paymentMethodRepository;
+
+   @Autowired
    private final ModelMapper modelMapper;
+
 
    public FlightServiceImpl(ModelMapper modelMapper,FlightRepository flightRepository) {
       this.modelMapper = modelMapper;
@@ -120,10 +129,22 @@ public class FlightServiceImpl implements FlightService {
    }
 
    @Override
-   public FlightResDto reserve(FlightReqDto fDto) {
+   public StatusDTO reserve(FlightReqDto fDto) {
       List<Flight> flightList = flightRepository.findAll();
 
       Flight flight = getFlight(flightList, fDto.getFlightReservationDto());
+
+      FlightReservationDto flightReservationDto = fDto.getFlightReservationDto();
+
+      boolean exists = flightReservationRepository.existsByDateFromAndDateToAndOriginAndDestination(
+              flightReservationDto.getDateFrom(),
+              flightReservationDto.getDateTo(),
+              flightReservationDto.getOrigin(),
+              flightReservationDto.getDestination()
+      );
+      if (exists) {
+         throw new DuplicateBookingException();
+      }
 
       int amount = getTotalPrice(flight, fDto.getFlightReservationDto());
       double interest = calculateInterest(amount, fDto.getFlightReservationDto()
@@ -137,39 +158,69 @@ public class FlightServiceImpl implements FlightService {
       resDto.setTotal(total);
       resDto.setFlightReservationDto(fDto.getFlightReservationDto());
       resDto.setStatusDTO(new StatusDTO(201, "El proceso termino satisfactoriamente"));
-      return resDto;
+
+      FlightReservation flightReservation = new FlightReservation();
+      flightReservation.setUserName(fDto.getUserName());
+      flightReservation.setDateFrom(flightReservationDto.getDateFrom());
+      flightReservation.setDateTo(flightReservationDto.getDateTo());
+      flightReservation.setOrigin(flightReservationDto.getOrigin());
+      flightReservation.setDestination(flightReservationDto.getDestination());
+      flightReservation.setFligthNumber(flightReservationDto.getFlightCode());
+      flightReservation.setSeatType(flightReservationDto.getSeatType());
+      flightReservation.setSeats(flightReservationDto.getSeats());
+
+
+      PaymentMethodsDto paymentDto = flightReservationDto.getPaymentMethodsDto();
+      PaymentMethod paymentMethod = new PaymentMethod();
+      paymentMethod.setType(paymentDto.getType());
+      paymentMethod.setNumber(paymentDto.getNumberCard());
+      paymentMethod.setDues(paymentDto.getDues());
+
+      PaymentMethod existingPaymentMethod = paymentMethodRepository.findByTypeAndNumber(paymentMethod.getType(), paymentMethod.getNumber());
+      if (existingPaymentMethod == null) {
+         paymentMethodRepository.save(paymentMethod);
+      } else {
+         paymentMethod = existingPaymentMethod;
+      }
+
+      flightReservation.setPaymentMethod(paymentMethod);
+
+      flightReservation.setUserName(fDto.getUserName());
+
+      flightReservationRepository.save(flightReservation);
+
+      return new StatusDTO(200, "Reserva de vuelo dada de alta correctamente");
    }
 
    @Override
    public FlightDTO findByFlightName(String name) {
-      Flight flight = flightRepository.findByName(name);
+      Flight flight = flightRepository.findByFlightCode(name);
       return modelMapper.map(flight, FlightDTO.class);
    }
 
    @Override
-   public ResponseFlightDTO deleteFlight(String name) {
-      flightRepository.delete(name);
+   public ResponseFlightDTO deleteFlight(String flightCode) {
+      Flight flight = flightRepository.findByFlightCode(flightCode);
+      flightRepository.delete(flight);
       return new ResponseFlightDTO("El vuelo fue borrado correctamente");
    }
 
    @Override
-   public Flight create(FlightDTO flight) {
-      int flag = 0;
+   public FlightDTO create(FlightDTO flight) {
       Flight newFlight = new Flight();
-      newFlight.setFlightNumber(flight.getFlightNumber());
-      newFlight.setOrigin(flight.getOrigin());
-      newFlight.setDestination(flight.getDestination());
-      newFlight.setSeatType(flight.getSeatType());
-      newFlight.setPricePerPerson(flight.getPricePerPerson());
-      newFlight.setDateFrom(flight.getDepartureDate());
-      newFlight.setDateTo(flight.getReturnDate());
+      modelMapper.map(flight,newFlight);
       flightRepository.save(newFlight);
-      return newFlight;
+      return flight;
    }
 
    @Override
-   public Flight upDate(FlightDTO flight) {
-      Flight flightChek = create(flight);
-      return flightChek;
+   public FlightDTO upDate(FlightDTO flightDTO) {
+      Flight guardado = flightRepository.findByFlightCode(flightDTO.getFlightCode());
+
+      Flight flightUpdate = modelMapper.map(flightDTO,Flight.class);
+      flightUpdate.setId(guardado.getId());
+
+      flightRepository.save(flightUpdate);
+      return modelMapper.map(flightUpdate,FlightDTO.class);
    }
 }

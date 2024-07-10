@@ -21,13 +21,13 @@ public interface HotelService {
 
    List<HotelDTO> findAvailableHotels(LocalDate dateFrom, LocalDate dateTo, String destination);
 
-   ReservationDto bookHotel(ReservationDtoRequest reservationDtoRequest);
+   StatusDTO bookHotel(ReservationDtoRequest reservationDtoRequest);
 
-   HotelDTO saveHotel(HotelDTO hotelDTO);
-
-   StatusDTO deleteHotel(String hotelCode);
+   HotelDTO saveHotel(HotelDTO hotelDTO);;
 
    Optional numOfPeople(BoockingDto bookingDto);
+
+   StatusDTO deleteHotel(String hotelCode);
 
    void validateDateRange(LocalDate dateFrom, LocalDate dateTo, String destination);
 }

@@ -1,15 +1,21 @@
 package com.example.Sprint1Equipo4.service;
 
 import com.example.Sprint1Equipo4.dto.request.BoockingDto;
+import com.example.Sprint1Equipo4.dto.request.PaymentMethodsDto;
 import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
 import com.example.Sprint1Equipo4.dto.response.HotelDTO;
 import com.example.Sprint1Equipo4.dto.response.ReservationDto;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.exception.*;
 import com.example.Sprint1Equipo4.model.Hotel;
+import com.example.Sprint1Equipo4.model.HotelBooking;
+import com.example.Sprint1Equipo4.model.PaymentMethod;
+import com.example.Sprint1Equipo4.repository.HotelBookingRepository;
 import com.example.Sprint1Equipo4.repository.HotelRepository;
+import com.example.Sprint1Equipo4.repository.PaymentMethodRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,6 +29,12 @@ public class HotelServiceImpl implements HotelService {
 
    @Autowired
    private HotelRepository hotelRepository;
+
+   @Autowired
+   private PaymentMethodRepository paymentMethodRepository;
+
+   @Autowired
+   private HotelBookingRepository hotelBookingRepository;
 
    @Autowired
    private final ModelMapper modelMapper;
@@ -42,8 +54,8 @@ public class HotelServiceImpl implements HotelService {
 
    @Override
    public HotelDTO searchByCode(String hotelCode) {
-      Hotel hotel = hotelRepository.findByCode(hotelCode);
-      if (!hotelRepository.existsByCode(hotelCode)) {
+      Optional<Hotel> hotel = hotelRepository.findByHotelCode(hotelCode);
+      if (!hotelRepository.existsByHotelCode(hotelCode)) {
          throw new HotelNotFoundException();
       } else {
          return modelMapper.map(hotel, HotelDTO.class);
@@ -52,37 +64,24 @@ public class HotelServiceImpl implements HotelService {
 
    @Override
    public Boolean existsHotel(String hotelCode) {
-      return hotelRepository.existsByCode(hotelCode);
+      return hotelRepository.existsByHotelCode(hotelCode);
    }
 
    @Override
    public HotelDTO saveHotel(HotelDTO hotelDTO) {
       Hotel hotel = new Hotel();
-      hotel.setHotelCode(hotelDTO.getHotelCode());
-      hotel.setName(hotelDTO.getName());
-      hotel.setDestination(hotelDTO.getDestination());
-      hotel.setRoomType(hotelDTO.getRoomType());
-      hotel.setPricePerNight(hotelDTO.getPricePerNight());
-      hotel.setDateFrom(hotelDTO.getDateFrom());
-      hotel.setDateTo(hotelDTO.getDateTo());
-      hotel.setReserved(hotelDTO.getReserved());
+      modelMapper.map(hotelDTO,hotel);
       hotelRepository.save(hotel);
       return hotelDTO;
    }
 
    @Override
    public HotelDTO updateHotel(HotelDTO hotelDTO) {
-      Hotel hotel = new Hotel();
-      hotel.setHotelCode(hotelDTO.getHotelCode());
-      hotel.setName(hotelDTO.getName());
-      hotel.setDestination(hotelDTO.getDestination());
-      hotel.setRoomType(hotelDTO.getRoomType());
-      hotel.setPricePerNight(hotelDTO.getPricePerNight());
-      hotel.setDateFrom(hotelDTO.getDateFrom());
-      hotel.setDateTo(hotelDTO.getDateTo());
-
-      hotelRepository.update(hotel);
-      return hotelDTO;
+      Hotel guardado = hotelRepository.findByHotelCode(hotelDTO.getHotelCode()).orElse(null);
+      Hotel hotel = modelMapper.map(hotelDTO,Hotel.class);
+       hotel.setId(guardado.getId());
+      hotelRepository.save(hotel);
+      return modelMapper.map(hotel,HotelDTO.class);
    }
 
    @Override
@@ -104,7 +103,9 @@ public class HotelServiceImpl implements HotelService {
 
    @Override
    public StatusDTO deleteHotel(String hotelCode) {
-      hotelRepository.delete(hotelCode);
+      Hotel hotel = hotelRepository.findByHotelCode(hotelCode).orElse(null);
+      Long id = (Long) hotel.getId();
+      hotelRepository.deleteById(id);
       return new StatusDTO(200, "El hotel se eliminó exitosamente");
    }
 
@@ -143,9 +144,19 @@ public class HotelServiceImpl implements HotelService {
    }
 
    @Override
-   public ReservationDto bookHotel(ReservationDtoRequest reservationDtoRequest) {
+   public StatusDTO bookHotel(ReservationDtoRequest reservationDtoRequest) {
       BoockingDto bookingDto = reservationDtoRequest.getBooking();
       numOfPeople(bookingDto);
+
+      boolean exists = hotelBookingRepository.existsByDateFromAndDateToAndDestinationAndHotelCode(
+              bookingDto.getDateFrom(),
+              bookingDto.getDateTo(),
+              bookingDto.getDestination(),
+              bookingDto.getHotelCode()
+      );
+      if (exists) {
+         throw new DuplicateBookingException();
+      }
 
       List<Hotel> allHotels = hotelRepository.findAll();
       List<Hotel> availableHotels = allHotels.stream()
@@ -170,7 +181,40 @@ public class HotelServiceImpl implements HotelService {
       reservationDto.setBooking(reservationDtoRequest.getBooking());
       reservationDto.setStatus(new StatusDTO(201, "La reserva se realizó satisfactoriamente"));
 
-      return reservationDto;
+
+
+      HotelBooking hotelBooking = new HotelBooking();
+      hotelBooking.setUserName(reservationDtoRequest.getUserName());
+      hotelBooking.setHotelCode(bookingDto.getHotelCode());
+      hotelBooking.setDateTo(bookingDto.getDateTo());
+      hotelBooking.setDateFrom(bookingDto.getDateFrom());
+      hotelBooking.setDestination(bookingDto.getDestination());
+      hotelBooking.setRoomType(bookingDto.getRoomType());
+      hotelBooking.setPeopleAmount(bookingDto.getPeopleAmount());
+
+      // Mapear el DTO a la entidad PaymentMethod
+      PaymentMethodsDto paymentDto = bookingDto.getPayment();
+      PaymentMethod paymentMethod = new PaymentMethod();
+      paymentMethod.setType(paymentDto.getType());
+      paymentMethod.setNumber(paymentDto.getNumberCard());
+      paymentMethod.setDues(paymentDto.getDues());
+
+      PaymentMethod existingPaymentMethod = paymentMethodRepository.findByTypeAndNumber(paymentMethod.getType(), paymentMethod.getNumber());
+      if (existingPaymentMethod == null) {
+         paymentMethodRepository.save(paymentMethod);
+      } else {
+         paymentMethod = existingPaymentMethod;
+      }
+
+      hotelBooking.setPaymentMethod(paymentMethod);
+
+      hotelBooking.setUserName(reservationDtoRequest.getUserName());
+      selectedHotel.setReserved(true);
+      hotelRepository.save(selectedHotel);
+
+      hotelBookingRepository.save(hotelBooking);
+
+      return new StatusDTO(200, "Reserva de hotel dada de alta correctamente");
    }
 
    private double calculateTotalPrice(Hotel hotel, LocalDate dateFrom, LocalDate dateTo) {

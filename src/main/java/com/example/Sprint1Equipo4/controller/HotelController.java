@@ -45,21 +45,15 @@ public class HotelController {
       return ResponseEntity.ok(availableHotels);
    }
 
-   @PostMapping("/hotels/{hotelCode}")
+   @PostMapping("/hotels/new")
    public ResponseEntity<HotelDTO> saveHotel(@RequestBody HotelDTO hotelDTO) {
       HotelDTO savedHotel = hotelService.saveHotel(hotelDTO);
       return ResponseEntity.status(HttpStatus.CREATED).body(savedHotel);
    }
 
-   @DeleteMapping("/hotels/{hotelCode}")
-   public ResponseEntity<StatusDTO> deleteHotel(@PathVariable String hotelCode){
+   @DeleteMapping("/hotels/delete")
+   public ResponseEntity<StatusDTO> deleteHotel(@RequestParam String hotelCode){
       return new ResponseEntity<>(hotelService.deleteHotel(hotelCode), HttpStatus.OK);
-   }
-
-   @PostMapping("/booking")
-   public ResponseEntity<ReservationDto> bookHotel(@RequestBody @Valid ReservationDtoRequest reservationDtoRequest) {
-      ReservationDto reservationDto = hotelService.bookHotel(reservationDtoRequest);
-      return ResponseEntity.status(HttpStatus.CREATED).body(reservationDto);
    }
 
    @GetMapping("/hotel/{hotelCode}")
@@ -67,8 +61,9 @@ public class HotelController {
       return new ResponseEntity<>(hotelService.searchByCode(hotelCode), HttpStatus.OK);
    }
 
-   @PutMapping("/hotel/{hotelCode}")
-   public ResponseEntity<HotelDTO> updateHotel(@RequestBody HotelDTO hotelDTO, @PathVariable String hotelCode) {
+
+   @PutMapping("/hotels/edit")
+   public ResponseEntity<HotelDTO> updateHotel(@RequestBody HotelDTO hotelDTO, @RequestParam String hotelCode) {
       return new ResponseEntity<>(hotelService.updateHotel(hotelDTO), HttpStatus.OK);
    }
 }
