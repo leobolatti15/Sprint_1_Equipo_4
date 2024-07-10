@@ -2,6 +2,7 @@ package com.example.Sprint1Equipo4.service;
 
 import com.example.Sprint1Equipo4.dto.request.BoockingDto;
 import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
+import com.example.Sprint1Equipo4.dto.response.ReservationMonthDTO;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.exception.InvalidRequestException;
 import com.example.Sprint1Equipo4.exception.ResourceNotFoundException;
@@ -70,5 +71,15 @@ public class HotelBookingServiceImpl implements HotelBookingService{
         bookingRepository.delete(existingHotelBooking);
 
         return new StatusDTO();
+    }
+
+    @Override
+    public ReservationMonthDTO getReservationMonth(int month, int year) {
+        List<HotelBooking> listHotelBooking = bookingRepository.findReservationsByMonthAndYear(month, year);
+        Double totalIncome = 0.0;
+        for (HotelBooking hotelBooking : listHotelBooking){
+            totalIncome += hotelBooking.getTotalPrice();
+        }
+        return new ReservationMonthDTO(month, year, totalIncome);
     }
 }

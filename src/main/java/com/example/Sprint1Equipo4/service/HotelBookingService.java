@@ -2,6 +2,7 @@ package com.example.Sprint1Equipo4.service;
 
 import com.example.Sprint1Equipo4.dto.request.BoockingDto;
 import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
+import com.example.Sprint1Equipo4.dto.response.ReservationMonthDTO;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 
 import java.util.List;
@@ -14,4 +15,6 @@ public interface HotelBookingService {
 
     StatusDTO deleteHotelBooking(Long id);
 
+
+    ReservationMonthDTO getReservationMonth(int month, int year);
 }

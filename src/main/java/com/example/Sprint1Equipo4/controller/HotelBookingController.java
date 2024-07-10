@@ -2,6 +2,7 @@ package com.example.Sprint1Equipo4.controller;
 
 import com.example.Sprint1Equipo4.dto.request.BoockingDto;
 import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
+import com.example.Sprint1Equipo4.dto.response.ReservationMonthDTO;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.service.HotelBookingService;
 import com.example.Sprint1Equipo4.service.HotelService;
@@ -45,5 +46,11 @@ public class HotelBookingController {
     public ResponseEntity<StatusDTO> deleteBooking(@RequestParam Long id){
         StatusDTO status = hotelBookingService.deleteHotelBooking(id);
         return new ResponseEntity<>(status, HttpStatus.OK);
+    }
+
+    @GetMapping("/income")
+    public ResponseEntity<ReservationMonthDTO> getReservationMonth(@RequestParam int month, @RequestParam int year) {
+        ReservationMonthDTO reservationMonth = hotelBookingService.getReservationMonth(month, year);
+        return new ResponseEntity<>(reservationMonth, HttpStatus.OK);
     }
 }
