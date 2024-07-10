@@ -129,7 +129,7 @@ public class FlightServiceImpl implements FlightService {
    }
 
    @Override
-   public FlightResDto reserve(FlightReqDto fDto) {
+   public StatusDTO reserve(FlightReqDto fDto) {
       List<Flight> flightList = flightRepository.findAll();
 
       Flight flight = getFlight(flightList, fDto.getFlightReservationDto());
@@ -189,7 +189,7 @@ public class FlightServiceImpl implements FlightService {
 
       flightReservationRepository.save(flightReservation);
 
-      return resDto;
+      return new StatusDTO(200, "Reserva de vuelo dada de alta correctamente");
    }
 
    @Override

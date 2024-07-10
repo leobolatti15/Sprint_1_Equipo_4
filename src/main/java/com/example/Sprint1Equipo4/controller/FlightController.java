@@ -1,13 +1,10 @@
 package com.example.Sprint1Equipo4.controller;
 
 import com.example.Sprint1Equipo4.dto.request.FlightReqDto;
-import com.example.Sprint1Equipo4.dto.response.FlightDTO;
-import com.example.Sprint1Equipo4.dto.response.FlightResDto;
-import com.example.Sprint1Equipo4.dto.response.HotelDTO;
+import com.example.Sprint1Equipo4.dto.response.*;
 import com.example.Sprint1Equipo4.exception.MissingParameterException;
 
 import com.example.Sprint1Equipo4.model.Flight;
-import com.example.Sprint1Equipo4.dto.response.ResponseFlightDTO;
 import com.example.Sprint1Equipo4.service.FlightService;
 import com.example.Sprint1Equipo4.service.HotelService;
 import jakarta.validation.Valid;
@@ -71,7 +68,7 @@ public class FlightController {
     }
 
     @PostMapping("/flight-reservation")
-    public ResponseEntity<FlightResDto> reserve(@RequestBody @Valid FlightReqDto flightReqDto) {
+    public ResponseEntity<StatusDTO> reserve(@RequestBody @Valid FlightReqDto flightReqDto) {
         return new ResponseEntity<>(flightService.reserve(flightReqDto), HttpStatus.CREATED);
     }
 
