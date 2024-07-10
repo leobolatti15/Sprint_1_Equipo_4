@@ -225,11 +225,11 @@ public class HotelServiceImplTest {
         // Act
 
         Mockito.when(hotelRepository.findAll()).thenReturn(allHotel);
-        ReservationDto result = hotelService.bookHotel(req);
+        StatusDTO result = hotelService.bookHotel(req);
 
         // Assert
         Assertions.assertNotNull(result);
-        assertEquals("La reserva se realizó satisfactoriamente", result.getStatus().getMessage(),
+        assertEquals("La reserva se realizó satisfactoriamente", result.getCode(),
                 "El mensaje de estado debería ser 'La reserva se realizó satisfactoriamente'");
 
     }

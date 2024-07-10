@@ -40,5 +40,4 @@ public class FlightReservationDto {
     private List<PeopleDto>people;
     @JsonProperty("payment_method")
     private PaymentMethodsDto paymentMethodsDto;
-
 }

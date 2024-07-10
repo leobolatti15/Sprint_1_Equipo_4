@@ -25,6 +25,9 @@ public class Hotel {
    private LocalDate dateFrom;
    private LocalDate dateTo;
    private Boolean reserved;
+    @OneToOne
+    @JoinColumn(name="booking_id", referencedColumnName = "id")
+    private HotelBooking hotelBooking;
 
     public Hotel(String s, String cataratasHotel, String puertoIguazu, String aDouble, int i, LocalDate of, LocalDate of1, boolean b) {
     }

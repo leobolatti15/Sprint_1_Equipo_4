@@ -1,21 +1,31 @@
 package com.example.Sprint1Equipo4.controller;
 
+import com.example.Sprint1Equipo4.dto.request.FlightReqDto;
 import com.example.Sprint1Equipo4.dto.response.FlightDTO;
+import com.example.Sprint1Equipo4.dto.request.FlightReqDto;
+import com.example.Sprint1Equipo4.dto.response.*;
+import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.exception.MissingParameterException;
 
 import com.example.Sprint1Equipo4.dto.response.ResponseFlightDTO;
+import com.example.Sprint1Equipo4.model.Flight;
 import com.example.Sprint1Equipo4.service.FlightService;
+import com.example.Sprint1Equipo4.service.HotelService;
+import jakarta.validation.Valid;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-
+@Validated
 @RestController
 @RequestMapping("/api/v1")
+
 public class FlightController {
     @Autowired
     private FlightService flightService;
@@ -66,6 +76,7 @@ public class FlightController {
     public ResponseEntity<FlightDTO> create(@RequestBody FlightDTO flightDTO) {
         return new ResponseEntity<>(flightService.create(flightDTO), HttpStatus.CREATED);
     }
+
 
     @PutMapping("/flights/edit")
     public ResponseEntity<FlightDTO> upDate(@RequestBody FlightDTO flightDTO, @RequestParam String flightCode) {

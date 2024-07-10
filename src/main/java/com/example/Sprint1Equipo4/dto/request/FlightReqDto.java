@@ -14,4 +14,6 @@ public class FlightReqDto {
     private String userName;
     @JsonProperty("flight_reservation")
     private @Valid FlightReservationDto flightReservationDto;
+
+
 }

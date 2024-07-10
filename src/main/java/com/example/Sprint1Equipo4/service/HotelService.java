@@ -21,7 +21,7 @@ public interface HotelService {
 
    List<HotelDTO> findAvailableHotels(LocalDate dateFrom, LocalDate dateTo, String destination);
 
-   ReservationDto bookHotel(ReservationDtoRequest reservationDtoRequest);
+   StatusDTO bookHotel(ReservationDtoRequest reservationDtoRequest);
 
    HotelDTO saveHotel(HotelDTO hotelDTO);;
 

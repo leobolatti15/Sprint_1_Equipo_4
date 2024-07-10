@@ -12,6 +12,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import jakarta.validation.ConstraintViolation;
+
+import java.util.List;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -67,6 +69,27 @@ public class ExceptionHandlerController {
                         .collect(Collectors.toList())
             )
       );
+   }
+@ExceptionHandler(ResourceNotFoundException.class)
+   public ResponseEntity<ErrorDTO> handleResourceNotFoundException(ResourceNotFoundException ex) {
+      ErrorDTO errorResponse = new ErrorDTO("No se encontró reserva", List.of(ex.getMessage()));
+      return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+   }
+
+   @ExceptionHandler(InvalidRequestException.class)
+   public ResponseEntity<ErrorDTO> handleInvalidRequestException(InvalidRequestException ex) {
+      ErrorDTO errorResponse = new ErrorDTO("Invalid request", List.of(ex.getMessage()));
+      return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+   }
+
+   @ExceptionHandler(DuplicateBookingException.class)
+   public ResponseEntity<ErrorDTO> handleDuplicateBookingException(DuplicateBookingException ex) {
+      String errorMessage = ex.getMessage();
+      if (errorMessage == null) {
+         errorMessage = "Ya hay una reserva para esa fecha y destino";
+      }
+      ErrorDTO errorResponse = new ErrorDTO(errorMessage, List.of());
+      return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
    }
 
    @ExceptionHandler(ConstraintViolationException.class)

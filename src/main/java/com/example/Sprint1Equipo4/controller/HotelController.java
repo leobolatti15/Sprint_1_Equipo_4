@@ -61,6 +61,7 @@ public class HotelController {
       return new ResponseEntity<>(hotelService.searchByCode(hotelCode), HttpStatus.OK);
    }
 
+
    @PutMapping("/hotels/edit")
    public ResponseEntity<HotelDTO> updateHotel(@RequestBody HotelDTO hotelDTO, @RequestParam String hotelCode) {
       return new ResponseEntity<>(hotelService.updateHotel(hotelDTO), HttpStatus.OK);
