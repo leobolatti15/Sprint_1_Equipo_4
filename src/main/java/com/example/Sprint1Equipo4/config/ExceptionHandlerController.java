@@ -79,4 +79,12 @@ public class ExceptionHandlerController {
             )
       );
    }
+
+   @ExceptionHandler(ResourceNotFoundException.class)
+   public ResponseEntity<ErrorDto> handleResourceNotFoundException(ResourceNotFoundException ex) {
+      ErrorDto error = new ErrorDto("Paquete no encontrado", 404);
+      return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+   }
+
+
 }

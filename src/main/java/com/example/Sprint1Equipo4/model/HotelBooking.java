@@ -37,8 +37,6 @@ public class HotelBooking {
 
     private PaymentMethod paymentMethod;
 
-    @OneToOne(mappedBy = "booking")
-    private HotelBooking hotelBooking;
 
 }
 
