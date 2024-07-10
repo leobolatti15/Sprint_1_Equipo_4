@@ -49,7 +49,7 @@ public class FlightReservationServiceImpl implements FlightReservationService{
         existingFlightReservation.setDateTo(flightReservationDto.getDateTo());
         existingFlightReservation.setDestination(flightReservationDto.getDestination());
         existingFlightReservation.setOrigin(flightReservationDto.getOrigin());
-        existingFlightReservation.setFligthNumber(flightReservationDto.getFlightNumber());
+        existingFlightReservation.setFligthNumber(flightReservationDto.getFlightCode());
         existingFlightReservation.setSeatType(flightReservationDto.getSeatType());
         existingFlightReservation.setPaymentMethod(modelMapper.map(flightReservationDto.getPaymentMethodsDto(), PaymentMethod.class));
 

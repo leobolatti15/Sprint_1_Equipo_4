@@ -14,7 +14,6 @@ import com.example.Sprint1Equipo4.exception.HotelNotFoundException;
 import com.example.Sprint1Equipo4.model.Hotel;
 import com.example.Sprint1Equipo4.repository.HotelRepository;
 import com.example.Sprint1Equipo4.service.HotelServiceImpl;
-import jakarta.validation.constraints.Max;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +27,8 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+
 import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
 
 @ExtendWith(MockitoExtension.class)
@@ -102,8 +103,8 @@ public class HotelServiceImplTest {
 
         String idDeEntrada = "CH-0002";
 
-        Mockito.when(hotelRepository.findByCode(idDeEntrada)).thenReturn(hotel1);
-        Mockito.when(hotelRepository.existsByCode(idDeEntrada)).thenReturn(true);
+        Mockito.when(hotelRepository.findByHotelCode(idDeEntrada)).thenReturn(Optional.of(hotel1));
+        Mockito.when(hotelRepository.existsByHotelCode(idDeEntrada)).thenReturn(true);
         Mockito.when(modelMapper.map(hotel1, HotelDTO.class)).thenReturn(hotelDTO1);
 
         HotelDTO result = hotelService.searchByCode(idDeEntrada);
@@ -118,7 +119,7 @@ public class HotelServiceImplTest {
         String hotelCode = "CH-0002";
 
         // Act
-        Mockito.when(hotelRepository.findByCode(hotelCode)).thenReturn(null);
+        Mockito.when(hotelRepository.findByHotelCode(hotelCode)).thenReturn(null);
 
 
         // Assert
@@ -133,7 +134,7 @@ public class HotelServiceImplTest {
         String hotelCode = "CH-0002";
 
         // Act
-        Mockito.when(hotelRepository.existsByCode(hotelCode)).thenReturn(true);
+        Mockito.when(hotelRepository.existsByHotelCode(hotelCode)).thenReturn(true);
         boolean result = hotelService.existsHotel(hotelCode);
 
         // Assert
@@ -147,7 +148,7 @@ public class HotelServiceImplTest {
         String hotelCode = "CH-0005";
 
         // Act
-        Mockito.when(hotelRepository.existsByCode(hotelCode)).thenReturn(false);
+        Mockito.when(hotelRepository.existsByHotelCode(hotelCode)).thenReturn(false);
         boolean result = hotelService.existsHotel(hotelCode);
 
         // Assert

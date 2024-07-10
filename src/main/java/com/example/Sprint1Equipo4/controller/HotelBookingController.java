@@ -4,6 +4,7 @@ import com.example.Sprint1Equipo4.dto.request.BoockingDto;
 import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.service.HotelBookingService;
+import com.example.Sprint1Equipo4.service.HotelService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,15 @@ import java.util.List;
 public class HotelBookingController {
     @Autowired
     HotelBookingService hotelBookingService;
+
+    @Autowired
+    HotelService hotelService;
+
+    @PostMapping("/booking")
+    public ResponseEntity<StatusDTO> bookHotel(@RequestBody @Valid ReservationDtoRequest reservationDtoRequest) {
+        StatusDTO statusDTO = hotelService.bookHotel(reservationDtoRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(statusDTO);
+    }
 
     @GetMapping("/hotel-bookings") //Listado de todas las  reservas de hotel.
     public ResponseEntity<List<BoockingDto>> listHotelBookings(){

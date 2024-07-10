@@ -6,6 +6,7 @@ import com.example.Sprint1Equipo4.dto.request.FlightReservationDto;
 import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.service.FlightReservationService;
+import com.example.Sprint1Equipo4.service.FlightService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,9 @@ public class FlightReservationController {
     @Autowired
     FlightReservationService flightReservationService;
 
+    @Autowired
+    FlightService flightService;
+
     @GetMapping("/flight-reservations") //Listado de todas las  reservas de vuelo.
     public ResponseEntity<List<FlightReservationDto>> listReservations(){
         return new ResponseEntity<>(flightReservationService.listAllFlightReservations(), HttpStatus.OK);
@@ -31,6 +35,11 @@ public class FlightReservationController {
     public ResponseEntity<StatusDTO> editReservation(@RequestBody @Valid FlightReqDto reservation, @RequestParam Long id){
         StatusDTO status = flightReservationService.updateFlightReservation(reservation, id);
         return new ResponseEntity<>(status, HttpStatus.OK);
+    }
+
+    @PostMapping("/flight-reservation")
+    public ResponseEntity<StatusDTO> reserve(@RequestBody @Valid FlightReqDto flightReqDto) {
+        return new ResponseEntity<>(flightService.reserve(flightReqDto), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/flight-reservation/delete") // Borrar una reserva buscando por id

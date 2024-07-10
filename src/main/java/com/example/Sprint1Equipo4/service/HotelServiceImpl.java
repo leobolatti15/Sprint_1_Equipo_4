@@ -54,8 +54,8 @@ public class HotelServiceImpl implements HotelService {
 
    @Override
    public HotelDTO searchByCode(String hotelCode) {
-      Hotel hotel = hotelRepository.findByCode(hotelCode);
-      if (!hotelRepository.existsByCode(hotelCode)) {
+      Optional<Hotel> hotel = hotelRepository.findByHotelCode(hotelCode);
+      if (!hotelRepository.existsByHotelCode(hotelCode)) {
          throw new HotelNotFoundException();
       } else {
          return modelMapper.map(hotel, HotelDTO.class);
@@ -64,37 +64,24 @@ public class HotelServiceImpl implements HotelService {
 
    @Override
    public Boolean existsHotel(String hotelCode) {
-      return hotelRepository.existsByCode(hotelCode);
+      return hotelRepository.existsByHotelCode(hotelCode);
    }
 
    @Override
    public HotelDTO saveHotel(HotelDTO hotelDTO) {
       Hotel hotel = new Hotel();
-      hotel.setHotelCode(hotelDTO.getHotelCode());
-      hotel.setName(hotelDTO.getName());
-      hotel.setDestination(hotelDTO.getDestination());
-      hotel.setRoomType(hotelDTO.getRoomType());
-      hotel.setPricePerNight(hotelDTO.getPricePerNight());
-      hotel.setDateFrom(hotelDTO.getDateFrom());
-      hotel.setDateTo(hotelDTO.getDateTo());
-      hotel.setReserved(hotelDTO.getReserved());
+      modelMapper.map(hotelDTO,hotel);
       hotelRepository.save(hotel);
       return hotelDTO;
    }
 
    @Override
    public HotelDTO updateHotel(HotelDTO hotelDTO) {
-      Hotel hotel = new Hotel();
-      hotel.setHotelCode(hotelDTO.getHotelCode());
-      hotel.setName(hotelDTO.getName());
-      hotel.setDestination(hotelDTO.getDestination());
-      hotel.setRoomType(hotelDTO.getRoomType());
-      hotel.setPricePerNight(hotelDTO.getPricePerNight());
-      hotel.setDateFrom(hotelDTO.getDateFrom());
-      hotel.setDateTo(hotelDTO.getDateTo());
-
-      hotelRepository.update(hotel);
-      return hotelDTO;
+      Hotel guardado = hotelRepository.findByHotelCode(hotelDTO.getHotelCode()).orElse(null);
+      Hotel hotel = modelMapper.map(hotelDTO,Hotel.class);
+       hotel.setId(guardado.getId());
+      hotelRepository.save(hotel);
+      return modelMapper.map(hotel,HotelDTO.class);
    }
 
    @Override
@@ -116,7 +103,9 @@ public class HotelServiceImpl implements HotelService {
 
    @Override
    public StatusDTO deleteHotel(String hotelCode) {
-      hotelRepository.delete(hotelCode);
+      Hotel hotel = hotelRepository.findByHotelCode(hotelCode).orElse(null);
+      Long id = (Long) hotel.getId();
+      hotelRepository.deleteById(id);
       return new StatusDTO(200, "El hotel se eliminó exitosamente");
    }
 
