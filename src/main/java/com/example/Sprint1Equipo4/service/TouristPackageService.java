@@ -15,4 +15,6 @@ public interface TouristPackageService {
 
     void deletePackage(Long packageNumber);
 
+    boolean reservationExists(Long reservationId);
+
 }

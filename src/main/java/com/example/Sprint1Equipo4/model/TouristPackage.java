@@ -27,8 +27,7 @@ public class TouristPackage {
 
     private Long clientId;
 
-    private int bookingResId1;
-
-    private int bookingResId2;
+    @ElementCollection
+    private List<Long> bookingsOrReservations = new ArrayList<>();
 
 }
