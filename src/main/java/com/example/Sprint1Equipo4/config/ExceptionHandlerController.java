@@ -16,6 +16,7 @@ import jakarta.validation.ConstraintViolation;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @ControllerAdvice
 public class ExceptionHandlerController {
    @ExceptionHandler(HotelNotFoundException.class)
@@ -102,4 +103,23 @@ public class ExceptionHandlerController {
             )
       );
    }
+
+   @ExceptionHandler(ArgumentException.class)
+   public ResponseEntity<ErrorDto> handlerArgumentException(ArgumentException ex) {
+      ErrorDto error = new ErrorDto("El paquete debe contener exactamente dos reservas.", 400);
+      return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+   }
+
+   @ExceptionHandler(PackageNotFound.class)
+   public ResponseEntity<ErrorDto> handlerPackageNotFound(PackageNotFound ex) {
+      ErrorDto error = new ErrorDto("Paquete no encontrado", 404);
+      return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+   }
+
+   @ExceptionHandler(ReserveNotFound.class)
+   public ResponseEntity<ErrorDto> handlerReserveNotFound(ReserveNotFound ex) {
+      ErrorDto error = new ErrorDto("Una o ambas reservas especificadas no existen", 404);
+      return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+   }
+
 }
