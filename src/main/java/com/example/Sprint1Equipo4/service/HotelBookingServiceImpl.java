@@ -2,6 +2,8 @@ package com.example.Sprint1Equipo4.service;
 
 import com.example.Sprint1Equipo4.dto.request.BoockingDto;
 import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
+import com.example.Sprint1Equipo4.dto.response.ReservationDayDTO;
+import com.example.Sprint1Equipo4.dto.response.ReservationMonthDTO;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.exception.InvalidRequestException;
 import com.example.Sprint1Equipo4.exception.ResourceNotFoundException;
@@ -12,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,5 +73,25 @@ public class HotelBookingServiceImpl implements HotelBookingService{
         bookingRepository.delete(existingHotelBooking);
 
         return new StatusDTO();
+    }
+
+    @Override
+    public ReservationMonthDTO getReservationMonth(int month, int year) {
+        List<HotelBooking> listHotelBooking = bookingRepository.findReservationsByMonthAndYear(month, year);
+        Double totalIncome = 0.0;
+        for (HotelBooking hotelBooking : listHotelBooking){
+            totalIncome += hotelBooking.getTotalPrice();
+        }
+        return new ReservationMonthDTO(month, year, totalIncome);
+    }
+
+    @Override
+    public ReservationDayDTO getReservationDay(LocalDate date){
+        List<HotelBooking> listHotelBookingDay = bookingRepository.findReservationsByDate(date);
+        Double totalIncome = 0.0;
+        for (HotelBooking hotelBooking : listHotelBookingDay){
+            totalIncome += hotelBooking.getTotalPrice();
+        }
+        return new ReservationDayDTO(date, totalIncome);
     }
 }

@@ -24,12 +24,22 @@ public class FlightReservation {
     private String userName;
 
     private LocalDate dateFrom;
+
     private LocalDate dateTo;
+
     private String origin;
+
     private String destination;
-    private String fligthNumber;
+
+    private String flightCode;
+
     private Integer seats;
+
     private String seatType;
+
+    private LocalDate reservedDate;
+
+    private Double totalPrice;
 
 
     @ManyToOne

@@ -2,16 +2,21 @@ package com.example.Sprint1Equipo4.controller;
 
 import com.example.Sprint1Equipo4.dto.request.BoockingDto;
 import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
+import com.example.Sprint1Equipo4.dto.response.ReservationDayDTO;
+import com.example.Sprint1Equipo4.dto.response.ReservationMonthDTO;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.service.HotelBookingService;
 import com.example.Sprint1Equipo4.service.HotelService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Validated
@@ -45,5 +50,19 @@ public class HotelBookingController {
     public ResponseEntity<StatusDTO> deleteBooking(@RequestParam Long id){
         StatusDTO status = hotelBookingService.deleteHotelBooking(id);
         return new ResponseEntity<>(status, HttpStatus.OK);
+    }
+
+    @GetMapping("/income")
+    public ResponseEntity<ReservationMonthDTO> getReservationMonth(@RequestParam int month, @RequestParam int year) {
+        if (month < 1 || month > 12) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        ReservationMonthDTO reservationMonth = hotelBookingService.getReservationMonth(month, year);
+        return new ResponseEntity<>(reservationMonth, HttpStatus.OK);
+    }
+    @GetMapping("/income-day")
+    public ResponseEntity<ReservationDayDTO> getReservationDay(@RequestParam  @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate date){
+        ReservationDayDTO reservationDay = hotelBookingService.getReservationDay(date);
+        return new ResponseEntity<>(reservationDay, HttpStatus.OK);
     }
 }
