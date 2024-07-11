@@ -2,6 +2,8 @@ package com.example.Sprint1Equipo4.service;
 
 import com.example.Sprint1Equipo4.dto.request.FlightReqDto;
 import com.example.Sprint1Equipo4.dto.request.FlightReservationDto;
+import com.example.Sprint1Equipo4.dto.response.ReservationDayDTO;
+import com.example.Sprint1Equipo4.dto.response.ReservationMonthDTO;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.exception.InvalidRequestException;
 import com.example.Sprint1Equipo4.exception.ResourceNotFoundException;
@@ -12,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,23 +52,12 @@ public class FlightReservationServiceImpl implements FlightReservationService{
         existingFlightReservation.setDateTo(flightReservationDto.getDateTo());
         existingFlightReservation.setDestination(flightReservationDto.getDestination());
         existingFlightReservation.setOrigin(flightReservationDto.getOrigin());
-        existingFlightReservation.setFligthNumber(flightReservationDto.getFlightCode());
+        existingFlightReservation.setFlightCode(flightReservationDto.getFlightCode());
         existingFlightReservation.setSeatType(flightReservationDto.getSeatType());
         existingFlightReservation.setPaymentMethod(modelMapper.map(flightReservationDto.getPaymentMethodsDto(), PaymentMethod.class));
 
 
-/*
-        existingFlightReservation.setGoingDate(flightReservationDto.getDateFrom());
-        existingFlightReservation.setReturnDate(flightReservationDto.getDateTo());
-        existingFlightReservation.setDestination(flightReservationDto.getDestination());
-        existingFlightReservation.setOrigin(flightReservationDto.getOrigin());
-        existingFlightReservation.setFligthNumber(flightReservationDto.getFlightNumber());
-        existingFlightReservation.setSeatType(flightReservationDto.getSeatType());
-        existingFlightReservation.set(flightReservationDto.getPeople().stream()
-                .map(peopleDto -> modelMapper.map(peopleDto, People.class))
-                .collect(Collectors.toList()));
-        existingFlightReservation.setPaymentMethod(modelMapper.map(flightReservationDto.getPaymentMethodsDto(), PaymentMethod.class));
-*/
+
         // Guarda reserva actualizada
         flightReservationRepository.save(existingFlightReservation);
 
@@ -83,5 +75,25 @@ public class FlightReservationServiceImpl implements FlightReservationService{
         flightReservationRepository.delete(existingFlightReservation);
 
         return new StatusDTO();
+    }
+
+    @Override
+    public ReservationMonthDTO getReservationMonth(int month, int year) {
+        List<FlightReservation> listFlightReservation= flightReservationRepository.findReservationsByMonthAndYear(month, year);
+        Double totalIncome = 0.0;
+        for (FlightReservation flightReservation : listFlightReservation) {
+            totalIncome += flightReservation.getTotalPrice();
+        }
+        return new ReservationMonthDTO(month, year, totalIncome);
+    }
+
+    @Override
+    public ReservationDayDTO getReservationDay(LocalDate date){
+        List<FlightReservation> listFlightReservationsDay = flightReservationRepository.findReservationsByDate(date);
+        Double totalIncome = 0.0;
+        for (FlightReservation flightReservation : listFlightReservationsDay){
+            totalIncome += flightReservation.getTotalPrice();
+        }
+        return new ReservationDayDTO(date, totalIncome);
     }
 }

@@ -12,9 +12,7 @@ public interface HotelBookingRepository extends JpaRepository<HotelBooking, Long
             LocalDate dateFrom, LocalDate dateTo, String destination, String hotelCode
     );
 
-    @Query("SELECT b hotelCode, h pricePerNight  FROM HotelBooking b " +
-            "JOIN Hotel h ON h.hotelCode = b.hotelCode " +
-            "WHERE b.reservedDate = :date")
+    @Query("SELECT b FROM HotelBooking b WHERE b.reservedDate =:date ")
     List<HotelBooking> findReservationsByDate(LocalDate date);
 
     @Query("SELECT b FROM HotelBooking b WHERE MONTH( b.reservedDate)=:month AND YEAR(b.reservedDate) = :year")

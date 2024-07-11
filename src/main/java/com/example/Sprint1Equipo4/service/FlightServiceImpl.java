@@ -151,6 +151,8 @@ public class FlightServiceImpl implements FlightService {
             .getPaymentMethodsDto().getDues(), fDto.getFlightReservationDto().getPaymentMethodsDto().getType());
       double total = amount + interest;
 
+      System.out.println(total);
+
       FlightResDto resDto = new FlightResDto();
       resDto.setUserName(fDto.getFlightReservationDto().getPeople().getFirst().getEmail());
       resDto.setAmount(amount);
@@ -165,9 +167,11 @@ public class FlightServiceImpl implements FlightService {
       flightReservation.setDateTo(flightReservationDto.getDateTo());
       flightReservation.setOrigin(flightReservationDto.getOrigin());
       flightReservation.setDestination(flightReservationDto.getDestination());
-      flightReservation.setFligthNumber(flightReservationDto.getFlightCode());
+      flightReservation.setFlightCode(flightReservationDto.getFlightCode());
       flightReservation.setSeatType(flightReservationDto.getSeatType());
       flightReservation.setSeats(flightReservationDto.getSeats());
+      flightReservation.setReservedDate(LocalDate.now());
+      flightReservation.setTotalPrice(resDto.getTotal());
 
 
       PaymentMethodsDto paymentDto = flightReservationDto.getPaymentMethodsDto();
