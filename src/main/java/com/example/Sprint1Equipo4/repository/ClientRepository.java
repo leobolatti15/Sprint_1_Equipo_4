@@ -8,15 +8,14 @@ import java.util.List;
 
 public interface ClientRepository extends JpaRepository<Client, Long> {
    @Query("SELECT c FROM Client c " +
-         "JOIN c.hotelBooking hb " +
-         "WHERE YEAR(hb.reservedDate) = :year " +
+         "LEFT JOIN c.hotelBooking hb " +
+         "LEFT JOIN c.flightReservation fr " +
+         "WHERE (hb IS NOT NULL AND YEAR(hb.reservedDate) = :year) " +
+         "OR (fr IS NOT NULL AND YEAR(fr.reservedDate) = :year) " +
          "GROUP BY c.id " +
-         "ORDER BY COUNT(hb.id) DESC")
+         "ORDER BY COUNT(hb) + COUNT(fr) DESC")
    List<Client> findBookingQuantityByYear(@Param("year") int year);
 
    Client findByUserName(String userName);
 
-//   @Query("SELECT c FROM Client c " +
-//         "JOIN c.flightReservations fr WHERE YEAR(fr.reservedDate) = :year GROUP BY c ORDER BY COUNT(fr) DESC LIMIT 3 ")
-//   List<Client> findClientsByBookingQuantity(@Param("year") int year);
 }

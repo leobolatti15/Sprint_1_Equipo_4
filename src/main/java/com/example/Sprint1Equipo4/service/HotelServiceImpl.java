@@ -17,7 +17,6 @@ import com.example.Sprint1Equipo4.repository.HotelRepository;
 import com.example.Sprint1Equipo4.repository.PaymentMethodRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,28 +29,24 @@ import java.util.stream.Collectors;
 public class HotelServiceImpl implements HotelService {
 
    @Autowired
-   private HotelRepository hotelRepository;
+   private final HotelRepository hotelRepository;
 
    @Autowired
-   private PaymentMethodRepository paymentMethodRepository;
+   private final PaymentMethodRepository paymentMethodRepository;
 
    @Autowired
-   private HotelBookingRepository hotelBookingRepository;
+   private final HotelBookingRepository hotelBookingRepository;
 
    @Autowired
-   private ClientRepository clientRepository;
-
-   @Autowired
-   private final ClientService clientService;
+   private final ClientRepository clientRepository;
 
    @Autowired
    private final ModelMapper modelMapper;
 
-   public HotelServiceImpl(HotelRepository hotelRepository, ClientService clientService, PaymentMethodRepository paymentMethodRepository, HotelBookingRepository hotelBookingRepository, ClientRepository clientRepository, ClientService clientService1, ModelMapper modelMapper) {
+   public HotelServiceImpl(HotelRepository hotelRepository, PaymentMethodRepository paymentMethodRepository, HotelBookingRepository hotelBookingRepository, ClientRepository clientRepository, ModelMapper modelMapper) {
       this.paymentMethodRepository = paymentMethodRepository;
       this.hotelBookingRepository = hotelBookingRepository;
       this.clientRepository = clientRepository;
-      this.clientService = clientService;
       this.modelMapper = modelMapper;
       this.hotelRepository = hotelRepository;
    }

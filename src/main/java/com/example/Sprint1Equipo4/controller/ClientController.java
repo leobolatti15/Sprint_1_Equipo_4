@@ -27,7 +27,7 @@ public class ClientController {
    @Autowired
    private ClientService clientService;
 
-   @GetMapping("/hotels/top-3")
+   @GetMapping("/top-3")
    public ResponseEntity<List<ClientDTO>> getHotelsTop3ClientsByBookingQuantity(@RequestParam int year) {
       if (!isValidYear(year)) {
          throw new UnexpectedTypeException();
@@ -38,10 +38,5 @@ public class ClientController {
    private boolean isValidYear(int year) {
       return year >= 1000 && year <= 9999;
    }
-
-//   @GetMapping("/flights/top-3")
-//   public ResponseEntity<List<ClientDTO>> getFlightsTop3ClientsByBookingQuantity(@RequestParam int year) throws InvalidYearException {
-//      return new ResponseEntity<>(clientService.getHotelsTop3ClientsByBookingQuantity(year), HttpStatus.OK);
-//   }
 }
 
