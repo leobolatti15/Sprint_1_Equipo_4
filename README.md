@@ -3,7 +3,7 @@ https://github.com/leobolatti15/Sprint_1_Equipo_4
 
 La colección del proyecto se encuentra en la carpeta resources
 
-Sprint 1:
+# Sprint 1:
 ## Descripción
 Se implementó una API REST para dar solución a un problema planteado por una agencia de turismo, que desea recibir solicitudes de reserva de hoteles y vuelos. 
 Se cuenta con datos de cada uno de ellos y requerimientos mínimos: 
@@ -41,15 +41,15 @@ EXCEPCIONES:
   1) Fecha fuera de rango: fecha fuera del rango de reserva o fecha dateFrom es posterior a dateTo
   2) Pedido sin parámetros: falta alguno de: dateTo, dateFrom, origin, destination. Si faltan todos se mantiene la respuesta de lista completa de hoteles/vuelos.
 
-SPRINT 2:
+# SPRINT 2:
 
 Se realizaron test unitarios y de integración. Todas las actividades se realizaron de manera grupal.
 
-SPRINT 3: 
+# SPRINT 3: 
 
 Se adapta el proyecto e integra a base de datos relacional, con el uso de MySQL, H2, y consultas HQL
 
-Requerimiento 1: Realizado por Matias Oggero
+# Requerimiento 1: Realizado por Matias Oggero
 
 POST /api/v1/hotels/new/ Alta de un nuevo hotel
 
@@ -87,8 +87,7 @@ DELETE /api/v1/hotel-booking/delete?id=num_id
 
 DELETE /api/v1/flight-reservation/delete?id=num_id Baja de una reserva de vuelo
 
-
-Requerimiento 2: Leonardo Bolatti
+# Requerimiento 2: Leonardo Bolatti
 
 La agencia de viajes y turismo desea empezar a implementar el armado de paquetes turísticos; para esto, especificó que cada paquete turístico podrá estar conformado de la siguiente manera: Dos reservas de vuelos. Dos reservas de hotel. Una reserva de vuelo y una reserva de hotel
 Los paquetes turísticos ofrecen como beneficio al cliente, un descuento del 10% sobre el valor total de la sumatoria de los dos ítems que tenga incorporado. Por ejemplo: Si se tiene una reserva de vuelo por $30.000 y una reserva de hotel por $15.000, la sumatoria total es de $45.000. Si aplicamos el descuento del 10% tendremos $45.000 - $4500, por lo que el precio total del paquete sería de $40.500.
@@ -101,8 +100,7 @@ GET /api/v1/touristicpackages Listado de todos los paquetes dados de alta
 
 DELETE /api/v1/touristicpackage/delete?packageNumber=number Baja de un paquete
 
-
-Requerimiento 3: Josefina Eberhardt
+# Requerimiento 3: Josefina Eberhardt
 
 El dueño de la agencia de turismo manifestó la necesidad de conocer los montos brutos totales que ingresan en un determinado día o mes a partir de cada una de las reservas realizadas. Para ello solicita que sus empleados sean capaces de realizar consultas por día o mes y brindarle dicha información.
 
@@ -110,7 +108,8 @@ GET /api/v1/income?date=dd/mm/yyyy Total de ingresos brutos para un día en part
 
 GET /api/v1/income?month=1&year=2021 Total de ingresos brutos para un mes y año en particular  a partir de reservas
 
-Requerimiento 4: Macarena Ruffa
+# Requerimiento 4: Macarena Ruffa
+
 Para la agencia de turismo es muy importante poder premiar a sus mejores clientes. Para ello, desea poder conocer el “top 3” de clientes que hayan realizado mayor cantidad de reservas en un determinado año.
 
 GET /api/v1/clients/top-3 Listado del top 3 de clientes en base a cantidad de reservas realizadas
