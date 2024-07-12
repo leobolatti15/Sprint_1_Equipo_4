@@ -50,9 +50,6 @@ public class HotelBooking {
     @JoinColumn(name="clients_id")
     private Client client;
 
-
-    public void setUserName(String userName) {
-    }
 }
 
 

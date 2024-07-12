@@ -17,6 +17,7 @@ import com.example.Sprint1Equipo4.repository.HotelRepository;
 import com.example.Sprint1Equipo4.repository.PaymentMethodRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -50,7 +51,7 @@ public class HotelServiceImpl implements HotelService {
       this.paymentMethodRepository = paymentMethodRepository;
       this.hotelBookingRepository = hotelBookingRepository;
       this.clientRepository = clientRepository;
-      this.clientService = clientService1;
+      this.clientService = clientService;
       this.modelMapper = modelMapper;
       this.hotelRepository = hotelRepository;
    }
@@ -115,7 +116,7 @@ public class HotelServiceImpl implements HotelService {
    @Override
    public StatusDTO deleteHotel(String hotelCode) {
       Hotel hotel = hotelRepository.findByHotelCode(hotelCode).orElse(null);
-      Long id = (Long) hotel.getId();
+      Long id = hotel.getId();
       hotelRepository.deleteById(id);
       return new StatusDTO(200, "El hotel se eliminó exitosamente");
    }
@@ -200,6 +201,8 @@ public class HotelServiceImpl implements HotelService {
 
       // Crear y configurar la reserva de hotel
       HotelBooking hotelBooking = new HotelBooking();
+      hotelBooking.setUserName(reservationDtoRequest.getUserName());
+      hotelBooking.setHotelCode(bookingDto.getHotelCode());
       hotelBooking.setDateTo(bookingDto.getDateTo());
       hotelBooking.setDateFrom(bookingDto.getDateFrom());
       hotelBooking.setDestination(bookingDto.getDestination());
@@ -207,6 +210,7 @@ public class HotelServiceImpl implements HotelService {
       hotelBooking.setPeopleAmount(bookingDto.getPeopleAmount());
       hotelBooking.setRoomType(bookingDto.getRoomType());
       hotelBooking.setReservedDate(LocalDate.now());
+      hotelBooking.setPeopleAmount(bookingDto.getPeopleAmount());
       hotelBooking.setTotalPrice(Double.valueOf(reservationDto.getTotal()));
       hotelBooking.setClient(client);
 
@@ -229,6 +233,7 @@ public class HotelServiceImpl implements HotelService {
       // Marcar el hotel como reservado y guardar la reserva
       selectedHotel.setReserved(true);
       hotelRepository.save(selectedHotel);
+
       hotelBookingRepository.save(hotelBooking);
 
       return new StatusDTO(200, "Reserva de hotel dada de alta correctamente");
