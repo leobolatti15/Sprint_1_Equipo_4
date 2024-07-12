@@ -2,6 +2,7 @@
 https://github.com/leobolatti15/Sprint_1_Equipo_4
 
 La colección del proyecto se encuentra en la carpeta resources
+El documento de daily meeting se encuentra en la rama develop
 
 # Sprint 1:
 Se implementó una API REST para dar solución a un problema planteado por una agencia de turismo, que desea recibir solicitudes de reserva de hoteles y vuelos. 
