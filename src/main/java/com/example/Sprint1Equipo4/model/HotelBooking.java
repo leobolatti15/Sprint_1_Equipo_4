@@ -39,7 +39,6 @@ public class HotelBooking {
 
     private Double totalPrice;
 
-
     @ManyToOne
     @JoinColumn(name = "payments_method_id")
     private PaymentMethod paymentMethod;

@@ -18,10 +18,9 @@ public class Client {
     private Long id;
 
     @Column(name = "booking_quantity")
-    private Integer bookingQuantity;
+    private int bookingQuantity;
 
-    //@OneToOne(mappedBy = "user_id")
-   // private UserEntity userEntity;
+    private String userName;
 
     @OneToMany(mappedBy = "client")
     private List<HotelBooking> hotelBooking;

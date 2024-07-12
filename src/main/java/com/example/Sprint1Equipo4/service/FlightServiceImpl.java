@@ -29,6 +29,9 @@ public class FlightServiceImpl implements FlightService {
    FlightRepository flightRepository;
 
    @Autowired
+   private final ClientService clientService;
+
+   @Autowired
    FlightReservationRepository flightReservationRepository;
 
    @Autowired
@@ -38,9 +41,10 @@ public class FlightServiceImpl implements FlightService {
    private final ModelMapper modelMapper;
 
 
-   public FlightServiceImpl(ModelMapper modelMapper,FlightRepository flightRepository) {
+   public FlightServiceImpl(ModelMapper modelMapper, FlightRepository flightRepository, ClientService clientService) {
       this.modelMapper = modelMapper;
       this.flightRepository = flightRepository;
+      this.clientService = clientService;
    }
 
    @Override

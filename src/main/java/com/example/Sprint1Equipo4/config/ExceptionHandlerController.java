@@ -5,6 +5,7 @@ import com.example.Sprint1Equipo4.dto.response.ErrorDTO;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.exception.*;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.UnexpectedTypeException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -119,6 +120,12 @@ public class ExceptionHandlerController {
    @ExceptionHandler(ReserveNotFound.class)
    public ResponseEntity<ErrorDto> handlerReserveNotFound(ReserveNotFound ex) {
       ErrorDto error = new ErrorDto("Una o ambas reservas especificadas no existen", 404);
+      return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+   }
+
+   @ExceptionHandler(UnexpectedTypeException.class)
+   public ResponseEntity<ErrorDto> handlerReserveNotFound(UnexpectedTypeException ex) {
+      ErrorDto error = new ErrorDto("Ingresar una fecha válida de 4 dígitos", 404);
       return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
    }
 

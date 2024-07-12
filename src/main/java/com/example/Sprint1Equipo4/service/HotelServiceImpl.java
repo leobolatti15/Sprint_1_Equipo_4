@@ -7,15 +7,16 @@ import com.example.Sprint1Equipo4.dto.response.HotelDTO;
 import com.example.Sprint1Equipo4.dto.response.ReservationDto;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.exception.*;
+import com.example.Sprint1Equipo4.model.Client;
 import com.example.Sprint1Equipo4.model.Hotel;
 import com.example.Sprint1Equipo4.model.HotelBooking;
 import com.example.Sprint1Equipo4.model.PaymentMethod;
+import com.example.Sprint1Equipo4.repository.ClientRepository;
 import com.example.Sprint1Equipo4.repository.HotelBookingRepository;
 import com.example.Sprint1Equipo4.repository.HotelRepository;
 import com.example.Sprint1Equipo4.repository.PaymentMethodRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -37,9 +38,19 @@ public class HotelServiceImpl implements HotelService {
    private HotelBookingRepository hotelBookingRepository;
 
    @Autowired
+   private ClientRepository clientRepository;
+
+   @Autowired
+   private final ClientService clientService;
+
+   @Autowired
    private final ModelMapper modelMapper;
 
-   public HotelServiceImpl(HotelRepository hotelRepository,ModelMapper modelMapper) {
+   public HotelServiceImpl(HotelRepository hotelRepository, ClientService clientService, PaymentMethodRepository paymentMethodRepository, HotelBookingRepository hotelBookingRepository, ClientRepository clientRepository, ClientService clientService1, ModelMapper modelMapper) {
+      this.paymentMethodRepository = paymentMethodRepository;
+      this.hotelBookingRepository = hotelBookingRepository;
+      this.clientRepository = clientRepository;
+      this.clientService = clientService1;
       this.modelMapper = modelMapper;
       this.hotelRepository = hotelRepository;
    }
@@ -148,16 +159,16 @@ public class HotelServiceImpl implements HotelService {
       BoockingDto bookingDto = reservationDtoRequest.getBooking();
       numOfPeople(bookingDto);
 
-      boolean exists = hotelBookingRepository.existsByDateFromAndDateToAndDestinationAndHotelCode(
-              bookingDto.getDateFrom(),
-              bookingDto.getDateTo(),
-              bookingDto.getDestination(),
-              bookingDto.getHotelCode()
-      );
-      if (exists) {
+      // Verificar si ya existe una reserva para las fechas y destino especificados
+      if (hotelBookingRepository.existsByDateFromAndDateToAndDestinationAndHotelCode(
+            bookingDto.getDateFrom(),
+            bookingDto.getDateTo(),
+            bookingDto.getDestination(),
+            bookingDto.getHotelCode())) {
          throw new DuplicateBookingException();
       }
 
+      // Obtener todos los hoteles disponibles y seleccionar uno
       List<Hotel> allHotels = hotelRepository.findAll();
       List<Hotel> availableHotels = allHotels.stream()
             .filter(hotel -> !hotel.getReserved())
@@ -169,30 +180,35 @@ public class HotelServiceImpl implements HotelService {
          throw new HotelNotFoundException();
       }
 
+      // Calcular el precio total y el interés
       double totalPrice = calculateTotalPrice(selectedHotel, reservationDtoRequest.getBooking().getDateFrom(), reservationDtoRequest.getBooking().getDateTo());
       double interest = calculateInterest(totalPrice, reservationDtoRequest.getBooking().getPayment().getDues(), reservationDtoRequest.getBooking().getPayment().getType());
       double total = totalPrice + interest;
 
+      // Crear y configurar el DTO de reserva
       ReservationDto reservationDto = new ReservationDto();
-      reservationDto.setUserName(reservationDtoRequest.getUserName());
+      String userName = reservationDtoRequest.getUserName();
+      reservationDto.setUserName(userName);
       reservationDto.setAmount(String.valueOf(totalPrice));
       reservationDto.setInterest(String.valueOf(interest));
       reservationDto.setTotal(String.valueOf(total));
       reservationDto.setBooking(reservationDtoRequest.getBooking());
       reservationDto.setStatus(new StatusDTO(201, "La reserva se realizó satisfactoriamente"));
 
+      // Actualizar el contador de reservas del cliente
+      Client client = updateClient(userName);
 
-
+      // Crear y configurar la reserva de hotel
       HotelBooking hotelBooking = new HotelBooking();
-      hotelBooking.setUserName(reservationDtoRequest.getUserName());
-      hotelBooking.setHotelCode(bookingDto.getHotelCode());
       hotelBooking.setDateTo(bookingDto.getDateTo());
       hotelBooking.setDateFrom(bookingDto.getDateFrom());
       hotelBooking.setDestination(bookingDto.getDestination());
+      hotelBooking.setHotelCode(bookingDto.getHotelCode());
+      hotelBooking.setPeopleAmount(bookingDto.getPeopleAmount());
       hotelBooking.setRoomType(bookingDto.getRoomType());
       hotelBooking.setReservedDate(LocalDate.now());
-      hotelBooking.setPeopleAmount(bookingDto.getPeopleAmount());
       hotelBooking.setTotalPrice(Double.valueOf(reservationDto.getTotal()));
+      hotelBooking.setClient(client);
 
       // Mapear el DTO a la entidad PaymentMethod
       PaymentMethodsDto paymentDto = bookingDto.getPayment();
@@ -210,13 +226,27 @@ public class HotelServiceImpl implements HotelService {
 
       hotelBooking.setPaymentMethod(paymentMethod);
 
-      hotelBooking.setUserName(reservationDtoRequest.getUserName());
+      // Marcar el hotel como reservado y guardar la reserva
       selectedHotel.setReserved(true);
       hotelRepository.save(selectedHotel);
-
       hotelBookingRepository.save(hotelBooking);
 
       return new StatusDTO(200, "Reserva de hotel dada de alta correctamente");
+   }
+
+   private Client updateClient(String userName) {
+      // Buscar o crear y actualizar el cliente
+      Client client = clientRepository.findByUserName(userName);
+      if (client == null) {
+         client = new Client();
+         client.setUserName(userName);
+         client.setBookingQuantity(1);
+      } else {
+         client.setBookingQuantity(client.getBookingQuantity() + 1);
+      }
+      clientRepository.save(client);
+
+      return client;
    }
 
    private double calculateTotalPrice(Hotel hotel, LocalDate dateFrom, LocalDate dateTo) {
