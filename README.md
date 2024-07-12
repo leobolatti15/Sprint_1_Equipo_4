@@ -4,7 +4,6 @@ https://github.com/leobolatti15/Sprint_1_Equipo_4
 La colección del proyecto se encuentra en la carpeta resources
 
 # Sprint 1:
-## Descripción
 Se implementó una API REST para dar solución a un problema planteado por una agencia de turismo, que desea recibir solicitudes de reserva de hoteles y vuelos. 
 Se cuenta con datos de cada uno de ellos y requerimientos mínimos: 
 
