@@ -84,7 +84,7 @@ public class HotelBookingServiceImpl implements HotelBookingService{
     }
 
     @Override
-    public StatusDTO deleteHotelBooking( Long id) {
+    public StatusDTO deleteHotelBooking(Long id) {
         //Busco reserva por id
         HotelBooking existingHotelBooking = bookingRepository.findById(id)
                .orElseThrow(() -> new ResourceNotFoundException());

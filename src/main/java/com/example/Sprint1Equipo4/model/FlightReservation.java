@@ -20,7 +20,6 @@ public class FlightReservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
     private String userName;
 
     private LocalDate dateFrom;

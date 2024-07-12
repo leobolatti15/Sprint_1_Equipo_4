@@ -8,9 +8,11 @@ import com.example.Sprint1Equipo4.dto.response.FlightResDto;
 import com.example.Sprint1Equipo4.dto.response.ResponseFlightDTO;
 import com.example.Sprint1Equipo4.dto.response.StatusDTO;
 import com.example.Sprint1Equipo4.exception.*;
+import com.example.Sprint1Equipo4.model.Client;
 import com.example.Sprint1Equipo4.model.Flight;
 import com.example.Sprint1Equipo4.model.FlightReservation;
 import com.example.Sprint1Equipo4.model.PaymentMethod;
+import com.example.Sprint1Equipo4.repository.ClientRepository;
 import com.example.Sprint1Equipo4.repository.FlightRepository;
 import com.example.Sprint1Equipo4.repository.FlightReservationRepository;
 import com.example.Sprint1Equipo4.repository.PaymentMethodRepository;
@@ -26,21 +28,27 @@ import java.util.stream.Collectors;
 public class FlightServiceImpl implements FlightService {
 
    @Autowired
-   FlightRepository flightRepository;
+   private final FlightRepository flightRepository;
 
    @Autowired
-   FlightReservationRepository flightReservationRepository;
+   private FlightReservationRepository flightReservationRepository;
 
    @Autowired
-   PaymentMethodRepository paymentMethodRepository;
+   private PaymentMethodRepository paymentMethodRepository;
+
+   @Autowired
+   private final ClientRepository clientRepository;
 
    @Autowired
    private final ModelMapper modelMapper;
 
 
-   public FlightServiceImpl(ModelMapper modelMapper,FlightRepository flightRepository) {
+   public FlightServiceImpl(ModelMapper modelMapper, FlightRepository flightRepository, ClientRepository clientRepository, PaymentMethodRepository paymentMethodRepository, FlightReservationRepository flightReservationRepository) {
       this.modelMapper = modelMapper;
       this.flightRepository = flightRepository;
+      this.clientRepository = clientRepository;
+      this.flightReservationRepository = flightReservationRepository;
+      this.paymentMethodRepository = paymentMethodRepository;
    }
 
    @Override
@@ -161,6 +169,11 @@ public class FlightServiceImpl implements FlightService {
       resDto.setFlightReservationDto(fDto.getFlightReservationDto());
       resDto.setStatusDTO(new StatusDTO(201, "El proceso termino satisfactoriamente"));
 
+      // Actualizar el contador de reservas del cliente
+      String userName = fDto.getUserName();
+      Client client = updateClient(userName);
+
+      // Crear y configurar la reserva de vuelo
       FlightReservation flightReservation = new FlightReservation();
       flightReservation.setUserName(fDto.getUserName());
       flightReservation.setDateFrom(flightReservationDto.getDateFrom());
@@ -172,7 +185,7 @@ public class FlightServiceImpl implements FlightService {
       flightReservation.setSeats(flightReservationDto.getSeats());
       flightReservation.setReservedDate(LocalDate.now());
       flightReservation.setTotalPrice(resDto.getTotal());
-
+      flightReservation.setClient(client);
 
       PaymentMethodsDto paymentDto = flightReservationDto.getPaymentMethodsDto();
       PaymentMethod paymentMethod = new PaymentMethod();
@@ -194,6 +207,21 @@ public class FlightServiceImpl implements FlightService {
       flightReservationRepository.save(flightReservation);
 
       return new StatusDTO(200, "Reserva de vuelo dada de alta correctamente");
+   }
+
+   private Client updateClient(String userName) {
+      // Buscar o crear y actualizar el cliente
+      Client client = clientRepository.findByUserName(userName);
+      if (client == null) {
+         client = new Client();
+         client.setUserName(userName);
+         client.setBookingQuantity(1);
+      } else {
+         client.setBookingQuantity(client.getBookingQuantity() + 1);
+      }
+      clientRepository.save(client);
+
+      return client;
    }
 
    @Override

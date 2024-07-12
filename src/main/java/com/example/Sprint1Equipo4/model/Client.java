@@ -1,5 +1,6 @@
 package com.example.Sprint1Equipo4.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,10 +19,10 @@ public class Client {
     private Long id;
 
     @Column(name = "booking_quantity")
-    private Integer bookingQuantity;
+    private int bookingQuantity;
 
-    //@OneToOne(mappedBy = "user_id")
-   // private UserEntity userEntity;
+    @JsonProperty("user_name")
+    private String userName;
 
     @OneToMany(mappedBy = "client")
     private List<HotelBooking> hotelBooking;
