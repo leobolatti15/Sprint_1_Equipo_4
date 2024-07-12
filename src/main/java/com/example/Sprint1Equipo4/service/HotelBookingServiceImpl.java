@@ -1,6 +1,7 @@
 package com.example.Sprint1Equipo4.service;
 
 import com.example.Sprint1Equipo4.dto.request.BoockingDto;
+import com.example.Sprint1Equipo4.dto.request.PaymentMethodsDto;
 import com.example.Sprint1Equipo4.dto.request.ReservationDtoRequest;
 import com.example.Sprint1Equipo4.dto.response.ReservationDayDTO;
 import com.example.Sprint1Equipo4.dto.response.ReservationMonthDTO;
@@ -10,6 +11,7 @@ import com.example.Sprint1Equipo4.exception.ResourceNotFoundException;
 import com.example.Sprint1Equipo4.model.HotelBooking;
 import com.example.Sprint1Equipo4.model.PaymentMethod;
 import com.example.Sprint1Equipo4.repository.HotelBookingRepository;
+import com.example.Sprint1Equipo4.repository.PaymentMethodRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,8 @@ public class HotelBookingServiceImpl implements HotelBookingService{
 
     @Autowired
     HotelBookingRepository bookingRepository;
+    @Autowired
+    PaymentMethodRepository paymentMethodRepository;
 
     @Autowired
     ModelMapper modelMapper;
@@ -54,12 +58,28 @@ public class HotelBookingServiceImpl implements HotelBookingService{
         existingHotelBooking.setHotelCode(bookingDto.getHotelCode());
         existingHotelBooking.setPeopleAmount(bookingDto.getPeopleAmount());
         existingHotelBooking.setRoomType(bookingDto.getRoomType());
-        existingHotelBooking.setPaymentMethod(modelMapper.map(bookingDto.getPayment(), PaymentMethod.class));
+        PaymentMethodsDto paymentDto = bookingDto.getPayment();
 
+
+        PaymentMethod paymentMethod = new PaymentMethod();
+        paymentMethod.setType(paymentDto.getType());
+        paymentMethod.setNumber(paymentDto.getNumberCard());
+        paymentMethod.setDues(paymentDto.getDues());
+
+        PaymentMethod existingPaymentMethod = paymentMethodRepository.findByTypeAndNumber(paymentMethod.getType(), paymentMethod.getNumber());
+        if (existingPaymentMethod == null) {
+            paymentMethodRepository.save(paymentMethod);
+        } else {
+            paymentMethod = existingPaymentMethod;
+        }
+
+        existingHotelBooking.setPaymentMethod(paymentMethod);
+
+        existingHotelBooking.setId(id);
         // Guarda reserva actualizada
         bookingRepository.save(existingHotelBooking);
 
-        return new StatusDTO();
+        return new StatusDTO(200, "Reserva de hotel modificada correctamente");
 
     }
 
