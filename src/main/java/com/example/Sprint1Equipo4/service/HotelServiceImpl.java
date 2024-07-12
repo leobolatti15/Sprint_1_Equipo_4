@@ -184,7 +184,7 @@ public class HotelServiceImpl implements HotelService {
 
 
       HotelBooking hotelBooking = new HotelBooking();
-      hotelBooking.setUserName(reservationDtoRequest.getUserName());
+      hotelBooking.setUserName(reservationDto.getUserName());
       hotelBooking.setHotelCode(bookingDto.getHotelCode());
       hotelBooking.setDateTo(bookingDto.getDateTo());
       hotelBooking.setDateFrom(bookingDto.getDateFrom());

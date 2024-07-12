@@ -58,9 +58,8 @@ public class HotelBookingServiceImpl implements HotelBookingService{
         existingHotelBooking.setHotelCode(bookingDto.getHotelCode());
         existingHotelBooking.setPeopleAmount(bookingDto.getPeopleAmount());
         existingHotelBooking.setRoomType(bookingDto.getRoomType());
+
         PaymentMethodsDto paymentDto = bookingDto.getPayment();
-
-
         PaymentMethod paymentMethod = new PaymentMethod();
         paymentMethod.setType(paymentDto.getType());
         paymentMethod.setNumber(paymentDto.getNumberCard());
@@ -76,6 +75,7 @@ public class HotelBookingServiceImpl implements HotelBookingService{
         existingHotelBooking.setPaymentMethod(paymentMethod);
 
         existingHotelBooking.setId(id);
+
         // Guarda reserva actualizada
         bookingRepository.save(existingHotelBooking);
 
@@ -92,7 +92,7 @@ public class HotelBookingServiceImpl implements HotelBookingService{
         //Elimino reserva
         bookingRepository.delete(existingHotelBooking);
 
-        return new StatusDTO();
+        return new StatusDTO(200, "Reserva eliminada correctamente");
     }
 
     @Override
